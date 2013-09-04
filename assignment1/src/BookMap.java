@@ -7,17 +7,17 @@
 import java.io.File;
 import java.util.Collection;
 import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.Hashtable;
 
 public class BookMap {
 
     public int lines;
-    public TreeMap<String, Integer> map;
+    public Hashtable<String, Integer> map;
 
     //TODO handle exceptions with helpful error messages
     public BookMap(String filename) throws Exception{
         lines = 0;
-        map = new TreeMap<String, Integer>();
+        map = new Hashtable<String, Integer>(50000);
         String line;
         String[] words;
 
@@ -92,6 +92,7 @@ public class BookMap {
                 innerProd += value * map.get(word);
         }
 
+        //todo ensure it returns zero not a small negative exponential
         return Math.acos(innerProd / (norm * otherNorm));
     }
 }

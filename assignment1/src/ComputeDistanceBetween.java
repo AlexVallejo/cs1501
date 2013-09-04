@@ -18,7 +18,7 @@ public class ComputeDistanceBetween {
         BookMap book1 = new BookMap(args[0]);
         BookMap book2 = new BookMap(args[1]);
 
-        System.out.println("The distance between the documents is " +
+        System.out.println("The distance between the documents is: " +
                 book1.distanceBetween(book2));
         System.out.println("Elapsed time in seconds: " + watch.elapsedTime());
 
