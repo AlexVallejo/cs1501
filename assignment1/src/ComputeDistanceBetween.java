@@ -15,8 +15,13 @@ public class ComputeDistanceBetween {
 
         Stopwatch watch = new Stopwatch();
 
+        //If the filenames are equal, the files are equal. Unless the file
+        // changes before the initialization of the second book which is
+        // highly unlikely. No changes are made to the original file during
+        // execution of this program.
         if (args[0].equals(args[1])){
             BookMap book1 = new BookMap(args[0]);
+            book1.printMessages();
             book1.printMessages();
             System.out.println("The distance between the documents is: 0" +
                     ".000000 radians");

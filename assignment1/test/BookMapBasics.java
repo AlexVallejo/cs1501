@@ -55,6 +55,12 @@ public class BookMapBasics {
 
         assertEquals(0.350215, mobydick.distanceBetween(theprince), 0.000001);
         assertEquals(0.350215, theprince.distanceBetween(mobydick), 0.000001);
+        assertEquals(17503, mobydick.lines, 0);
+        assertEquals(210028, mobydick.totalWords, 0);
+        assertEquals(16834, mobydick.map.size());
+        assertEquals(4666, theprince.lines, 0);
+        assertEquals(49714, theprince.totalWords, 0);
+        assertEquals(5216, theprince.map.size());
     }
 
     @Test
@@ -78,10 +84,11 @@ public class BookMapBasics {
             for (BookMap otherbook : duplicateList){
                 if (book.filename.equals(otherbook.filename))
                     continue;
-                else
-                    System.out.println("Distance between " + book.filename +
-                            " & " + otherbook.filename + " is: " +
+                else{
+                    System.out.printf("Distance between %s & %s is: %.6f\n",
+                            book.filename, otherbook.filename,
                             book.distanceBetween(otherbook));
+                }
             }
             System.out.print("\n");
         }
