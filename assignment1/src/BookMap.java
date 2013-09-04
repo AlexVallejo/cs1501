@@ -4,30 +4,37 @@
  * Project: assignment1
  * Notes:
  */
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Collection;
-import java.util.Scanner;
 import java.util.Hashtable;
 
 public class BookMap {
 
     public int lines;
     public Hashtable<String, Integer> map;
+    public String filename;
+    public int totalWords;
+    public boolean valid;
 
     //TODO handle exceptions with helpful error messages
-    public BookMap(String filename) throws Exception{
+    public BookMap(String filename){
         lines = 0;
         map = new Hashtable<String, Integer>(50000);
         String line;
         String[] words;
+        valid = false;
+        this.filename = filename;
 
         try{
-            Scanner input = new Scanner(new File(filename));
+            BufferedReader input = new BufferedReader(new FileReader
+                    (filename));
 
-            while (input.hasNext()){
-                line = input.nextLine();
-                lines++;
-                line = line.replaceAll("[^a-zA-Z0-9\\s]", " ");
+            valid = true;
+            line = input.readLine();
+
+            while (line != null){
+                line = line.replaceAll("[\\W\\s]", " ");
                 line = line.toLowerCase();
                 words = line.split(" ");
 
