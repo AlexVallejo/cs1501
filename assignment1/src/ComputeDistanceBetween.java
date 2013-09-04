@@ -15,11 +15,22 @@ public class ComputeDistanceBetween {
 
         Stopwatch watch = new Stopwatch();
 
-        BookMap book1 = new BookMap(args[0]);
-        BookMap book2 = new BookMap(args[1]);
+        if (args[0].equals(args[1])){
+            BookMap book1 = new BookMap(args[0]);
+            book1.printMessages();
+            System.out.println("The distance between the documents is: 0" +
+                    ".000000 radians");
+            System.out.println("Elapsed time in seconds "+watch.elapsedTime());
+            System.exit(0);
+        }
 
-        System.out.println("The distance between the documents is: " +
-                book1.distanceBetween(book2));
+        BookMap book1 = new BookMap(args[0]);
+        book1.printMessages();
+        BookMap book2 = new BookMap(args[1]);
+        book2.printMessages();
+
+        System.out.printf("The distance between the documents is: %.6f " +
+                "radians\n", book1.distanceBetween(book2));
         System.out.println("Elapsed time in seconds: " + watch.elapsedTime());
 
     }//end main

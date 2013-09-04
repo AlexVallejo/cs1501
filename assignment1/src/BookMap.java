@@ -42,30 +42,26 @@ public class BookMap {
                     if (word.equals(""))
                         continue;
 
-                    if (map.get(word) == null)
+                    else if (map.get(word) == null)
                         map.put(word,1);
 
                     else
                         map.put(word, 1 + map.get(word));
-
                 }
 
+                line = input.readLine();
+                lines++;
             }
         }
 
         catch (Exception ex){
-            System.out.println(filename + " not found!");
         }
 
         Collection<Integer> wordCollection = map.values();
-        int totalWords = 0;
+        totalWords = 0;
         for (Integer occurrences : wordCollection){
             totalWords += occurrences;
         }
-
-        System.out.println("File " + filename  + ": " + lines + " lines, "
-                + totalWords + " words, " + map.size() + " distinct words");
-
     }
 
     public double distanceBetween(BookMap otherBook){
@@ -101,5 +97,13 @@ public class BookMap {
 
         //todo ensure it returns zero not a small negative exponential
         return Math.acos(innerProd / (norm * otherNorm));
+    }
+
+    public void printMessages(){
+        if (valid)
+            System.out.println("File " + filename  + ": " + lines + " lines, "
+                + totalWords + " words, " + map.size() + " distinct words");
+        else
+            System.out.println(filename + " not found!");
     }
 }
