@@ -69,6 +69,9 @@ public class BookMapBasics {
         BookMap badFileName = new BookMap("bad.txt");
 
         assertFalse(badFileName.valid);
+
+        assertEquals(Double.NaN,bookList.get(0).distanceBetween(badFileName),
+                0);
     }
 
     @Test
