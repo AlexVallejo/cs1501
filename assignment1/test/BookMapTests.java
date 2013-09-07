@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
-public class BookMapBasics {
+public class BookMapTests {
 
     private static ArrayList<BookMap> bookList;
     private static String[] fileNames;
@@ -97,4 +97,25 @@ public class BookMapBasics {
         }
 
     }
+
+    /*@Test
+    public void speedTest(){
+        int runs = 50;
+        double initialRun;
+
+        Stopwatch watch = new Stopwatch();
+        BookMap bookTest = new BookMap(fileNames[fileNames.length - 1]);
+        initialRun = watch.elapsedTimeSeconds();
+
+        watch = new Stopwatch();
+
+        for (int i = 0; i < runs; i++){
+            BookMap book = new BookMap(fileNames[fileNames.length - 1]);
+            book.distanceBetween(book);
+        }
+
+        double averageSpeed = watch.elapsedTimeSeconds() / (double)runs;
+        System.out.println("Initial run time: " + initialRun);
+        System.out.println("Average execution speed: " + averageSpeed);
+    }*/
 }

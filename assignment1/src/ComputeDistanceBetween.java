@@ -25,7 +25,8 @@ public class ComputeDistanceBetween {
             book1.printMessages();
             System.out.println("The distance between the documents is: 0" +
                     ".000000 radians");
-            System.out.println("Elapsed time in seconds "+watch.elapsedTime());
+            System.out.println("Elapsed time in seconds " +
+                    watch.elapsedTimeSeconds());
             System.exit(0);
         }
 
@@ -36,7 +37,7 @@ public class ComputeDistanceBetween {
 
         System.out.printf("The distance between the documents is: %.6f " +
                 "radians\n", book1.distanceBetween(book2));
-        System.out.println("Elapsed time in seconds: " + watch.elapsedTime());
+        System.out.println("Elapsed time: " + watch.elapsedTimeSeconds()+" s");
 
     }//end main
 }//end ComputeDistanceBetween

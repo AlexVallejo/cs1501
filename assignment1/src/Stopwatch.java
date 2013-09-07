@@ -31,9 +31,13 @@ public class Stopwatch {
    /**
      * Return elapsed time (in seconds) since this object was created.
      */
-    public double elapsedTime() {
+    public double elapsedTimeMillis() {
+        long now = System.currentTimeMillis();
+        return (now - start) / 100.0;
+    }
+
+    public double elapsedTimeSeconds() {
         long now = System.currentTimeMillis();
         return (now - start) / 1000.0;
     }
-
 } 

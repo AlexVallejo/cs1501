@@ -17,7 +17,6 @@ public class BookMap {
     public int totalWords;
     public boolean valid;
 
-    //TODO handle exceptions with helpful error messages
     public BookMap(String filename){
         lines = 0;
         map = new Hashtable<String, Integer>(50000);
@@ -31,12 +30,13 @@ public class BookMap {
                     (filename));
 
             valid = true;
-            line = input.readLine();
 
-            while (line != null){
-                line = line.replaceAll("[\\W\\s]", " ");
+            do {
+                line = input.readLine();
                 line = line.toLowerCase();
-                words = line.split(" ");
+
+                //addWordsToTable(line);
+                words = line.split("[\\W\\s]");
 
                 for (String word : words){
                     if (word.equals(""))
@@ -49,9 +49,8 @@ public class BookMap {
                         map.put(word, 1 + map.get(word));
                 }
 
-                line = input.readLine();
                 lines++;
-            }
+            }while (line != null);
         }
 
         catch (Exception ex){
@@ -61,6 +60,28 @@ public class BookMap {
         totalWords = 0;
         for (Integer occurrences : wordCollection){
             totalWords += occurrences;
+        }
+    }
+
+    private void addWordsToTable(String line){
+        int prev = 0;
+
+        for (int cur = 0; cur < line.length(); cur++){
+            char c = line.charAt(cur);
+
+            if (!Character.isLetterOrDigit(c) || cur == line.length() - 1){
+                if (cur == line.length() -1)
+                    cur++;
+
+                String sub = line.substring(prev, cur);
+                Integer value = map.get(sub);
+
+                if (value == null)
+                    map.put(sub, 1);
+                else
+                    map.put(sub, value + 1);
+                prev = cur + 1;
+            }
         }
     }
 
