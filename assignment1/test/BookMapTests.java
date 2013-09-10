@@ -45,19 +45,41 @@ public class BookMapTests {
     public void testEqualityWithExamples(){
         BookMap mobydick = new BookMap("balls.txt");
         BookMap theprince = new BookMap("bats.txt");
+        BookMap merchant = new BookMap("gloves.txt");
+        BookMap dickens = new BookMap("bases.txt");
 
         for (BookMap book : bookList){
             if (book.filename.equals("mobydick.txt"))
                 mobydick = book;
             else if (book.filename.equals("theprince.txt"))
                 theprince = book;
+            else if (book.filename.equals("merchant.txt"))
+                merchant = book;
+            else if (book.filename.equals("dickens.txt"))
+                dickens = book;
         }
 
         assertEquals(0.350215, mobydick.distanceBetween(theprince), 0.000001);
         assertEquals(0.350215, theprince.distanceBetween(mobydick), 0.000001);
+
+        assertEquals(1.141068, theprince.distanceBetween(merchant), 0.000001);
+        assertEquals(1.141068, merchant.distanceBetween(theprince), 0.000001);
+
+        assertEquals(0.324192, dickens.distanceBetween(theprince), 0.000001);
+        assertEquals(0.324192, theprince.distanceBetween(dickens), 0.000001);
+
+        assertEquals(9, merchant.lines, 0);
+        assertEquals(54, merchant.totalWords, 0);
+        assertEquals(38, merchant.map.size(), 0);
+
+        assertEquals(45913, dickens.lines, 0);
+        assertEquals(413896, dickens.totalWords, 0);
+        assertEquals(17704, dickens.map.size(), 0);
+
         assertEquals(17503, mobydick.lines, 0);
         assertEquals(210028, mobydick.totalWords, 0);
         assertEquals(16834, mobydick.map.size());
+
         assertEquals(4666, theprince.lines, 0);
         assertEquals(49714, theprince.totalWords, 0);
         assertEquals(5216, theprince.map.size());

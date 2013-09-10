@@ -32,6 +32,7 @@ public class ComputeDistanceBetween {
 
         BookMap book1 = new BookMap(args[0]);
         book1.printMessages();
+        //book1.printMap();
         BookMap book2 = new BookMap(args[1]);
         book2.printMessages();
 

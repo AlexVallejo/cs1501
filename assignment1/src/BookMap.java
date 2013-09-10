@@ -36,7 +36,7 @@ public class BookMap {
                 line = line.toLowerCase();
 
                 //addWordsToTable(line);
-                words = line.split("[\\W\\s]");
+                words = line.split("[\\W_]");
 
                 for (String word : words){
                     if (word.equals(""))
@@ -126,5 +126,10 @@ public class BookMap {
                 + totalWords + " words, " + map.size() + " distinct words");
         else
             System.out.println(filename + " not found!");
+    }
+
+    public void printMap(){
+        for (String word : map.keySet())
+            System.out.println(word);
     }
 }
