@@ -85,7 +85,7 @@ public class TreeDisplay extends JComponent
   }
   
   //draws the tree, starting from the given node, in the region with x values ranging
-  //from minX to maxX, with y value beginning at y, and next level at y + yIncr.
+  //from minX to maxX, with y symbol beginning at y, and next level at y + yIncr.
   private void drawTree(Graphics2D g2, Node t, int minX, int maxX, int y, int yIncr)
   {
     //skip if empty
