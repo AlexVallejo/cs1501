@@ -7,7 +7,6 @@
  */
 
 public class Node {
-    public String type;
     public String symbol;
     public Node right;
     public Node left;

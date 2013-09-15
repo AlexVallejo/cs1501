@@ -1,8 +1,3 @@
-import java.awt.*;
-import java.awt.geom.*;
-import javax.swing.*;
-import java.util.*;
-
 //a graphical component for displaying the contents of a binary tree.
 //
 //sample usage: for us this will be in the constructor for an Expression.
@@ -10,6 +5,12 @@ import java.util.*;
 // TreeDisplay display = new TreeDisplay(stringexpression);
 // display.setRoot(root);
 // 
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+import java.util.Stack;
 
 public class TreeDisplay extends JComponent
 {
