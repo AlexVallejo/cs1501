@@ -54,21 +54,39 @@ public class ExpressionEvaluator {
         if (line == null)
           continue;
 
-        Expression exp = new Expression(line);
-        exps.add(exp);
-        System.out.println(exp);
+        try {
+          Expression exp = new Expression(line);
+          exp.displayNormalized();
+          exps.add(exp);
+          //System.out.println(exp);
+        }
 
+        catch (ParseError pe){
+          System.out.println(pe);
+
+          char input;
+
+          do {
+            System.out.print("Do you want to continue (y/n):");
+            input = keyboard.nextLine().charAt(0);
+
+            if (input == 'n')
+              System.exit(0);
+
+          } while (input != 'y');
+        }
       } while (line != null);
 
       System.out.println("\nEnd of file reached");
+    }//End buffered reader exception
 
-    } catch (IOException ex) {
+    catch (IOException ex) {
       System.out.println(ex.toString());
       System.out.println("Sorry, but there was a problem with your " +
           "input file");
       System.exit(1);
     }
-  }
+  }//end main
 
   public static void printAtoms(boolean[] atoms) {
     for (int i = 0; i < atoms.length; i++)

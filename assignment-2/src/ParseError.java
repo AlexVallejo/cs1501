@@ -6,5 +6,9 @@
  * Peoplesoft: 357-8411
  */
 
-public class ParseError {
+public class ParseError extends Exception{
+
+  public ParseError(String line){
+    super(line);
+  }
 }
