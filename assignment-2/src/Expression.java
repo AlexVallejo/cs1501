@@ -8,52 +8,61 @@
 
 public class Expression {
 
-    private boolean value;
-    private String line;
+  private boolean value;
+  private String line;
+  Node root;
 
-    public Expression(String line){
+  public Expression(String line) {
 
-        this.line = line;
+    line = line.toUpperCase();
+    line = line.replaceAll(" ", "");
+    this.line = line;
 
-        char chars[] = line.toCharArray();
+    if (isExpr(line))
+      this.root = buildTree(line);
 
-        for (char c : chars){
-            c = Character.toUpperCase(c);
-        }
+  }
 
-        if (isNotValid(line))
-            return;
+  //=================================
+  //Methods Required by the assignment
+  //==================================
 
-    }
+  public static void setAtom(String atom, String value) {
+  }
 
-    public static void setAtom(String atom, String value){
-    }
+  public boolean evaluate() {
 
-    public boolean evaluate(){
+    //ToDo set value to evulation
+    return false;
+  }
 
-        //ToDo set value to evulation
-        return false;
-    }
+  public Expression copy() {
+    return new Expression(line);
+  }
 
-    public Expression copy(){
-        return new Expression(line);
-    }
+  public void normalize() {
+  }
 
-    public void normalize(){
-    }
+  public void displayNormalized() {
+  }
 
-    public void displayNormalized(){
-    }
+  public String toString() {
+    return line + " = " + this.value;
+  }
 
-    public String toString(){
-        return line + " = " + this.value;
-    }
 
-    private boolean isNotValid(String line){
-        char[] chars = line.toCharArray();
+  //=================================
+  //Custom helper methods!
+  //==================================
 
-        //ToDo validate the expression and print a helpful error message if the expression is not valid
+  private boolean isExpr(String line) {
+    //ToDo validate the expression and print a helpful error message if the expression is not valid
 
-        return true;
-    }
+    return true;
+  }
+
+  private Node buildTree(String line) {
+
+    return new Node();
+  }
 }

@@ -7,26 +7,26 @@
  */
 
 public class Node {
-    public String symbol;
-    public Node right;
-    public Node left;
+  public String symbol;
+  public Node right;
+  public Node left;
 
-    public Node(){
-    }
+  public Node() {
+  }
 
-    public Node(String value){
-        this(value, null);
-    }
+  public Node(String value) {
+    this(value, null);
+  }
 
-    public Node(String value, Node left){
-        this(value, left, null);
-    }
+  public Node(String value, Node left) {
+    this(value, left, null);
+  }
 
-    public Node(String value, Node left, Node right){
-        this.symbol = value;
-        this.left = left;
-        this.right = right;
-    }
+  public Node(String value, Node left, Node right) {
+    this.symbol = value;
+    this.left = left;
+    this.right = right;
+  }
 
 
 }
