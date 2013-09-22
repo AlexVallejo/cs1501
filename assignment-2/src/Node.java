@@ -11,7 +11,16 @@ public class Node {
   public Node right;
   public Node left;
 
-  public Node() {
+  public Node(char c) {
+    this(new String(new char[] {c}));
+  }
+
+  public Node(char c, Node left){
+    this(new String(new char[] {c}), left);
+  }
+
+  public Node(char c, Node left, Node right){
+    this(new String(new char[] {c}), left, right);
   }
 
   public Node(String value) {
@@ -27,6 +36,4 @@ public class Node {
     this.left = left;
     this.right = right;
   }
-
-
 }

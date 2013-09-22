@@ -81,9 +81,7 @@ public class Expression {
 
     //Base case: line => {exp} {op} {exp}
     if (isAtom(first) && isOp(op) && isAtom(last))
-      return new Node(strFrmChar(op),
-                      new Node(strFrmChar(first)),
-                      new Node(strFrmChar(last)));
+      return new Node(strFrmChar(op), new Node(first), new Node(last));
 
 
 
