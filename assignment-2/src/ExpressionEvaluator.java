@@ -62,7 +62,7 @@ public class ExpressionEvaluator {
         }
 
         catch (ParseError pe){
-          pe.printStackTrace();
+          System.out.println("\n" + pe);
 
           char input;
 
@@ -74,6 +74,8 @@ public class ExpressionEvaluator {
               System.exit(0);
 
           } while (input != 'y');
+
+          System.out.println();
         }
       } while (line != null);
 

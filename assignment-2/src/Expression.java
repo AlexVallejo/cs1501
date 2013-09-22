@@ -165,7 +165,7 @@ public class Expression {
 
       if (open == closed && open > 0){
         String str = line.substring(0, pos + 1);
-        return str; //ToDo includes parenthesis
+        return str;
       }
 
       pos++;
@@ -203,7 +203,7 @@ public class Expression {
 
       if (open == closed && open > 0){
         String str = line.substring(pos, line.length());
-        return str; //ToDo include parenthesis
+        return str;
       }
 
       pos--;
