@@ -25,27 +25,33 @@ public class ExpressionEvaluator {
       System.exit(0);
     }
 
-    atoms = new boolean[26];
-
     try {
       BufferedReader reader = new BufferedReader(new FileReader(args[0]));
       Scanner keyboard = new Scanner(System.in);
 
       String line;
-      for (int i = 0; i < atoms.length; i++) {
+      for (int i = 0; i < 26; i++) {
         line = reader.readLine();
+        line = line.trim();
+
+        String str = new String();
+        str += line.charAt(0);
+
         if (line.contains("true"))
-          atoms[i] = true;
+          Expression.setAtom(str,"true");
+
         else if (line.contains("false"))
-          atoms[i] = false;
+          Expression.setAtom(str,"false");
+
         else {
+          System.out.println("There must be 26 atoms declared.");
           System.out.println("Error reading line #" + i);
           System.out.printf("line %d: %s", i, line);
           continue;
         }
       }
 
-      printAtoms(atoms);
+      printAtoms();
       System.out.println("\n");
 
       do {
@@ -90,8 +96,8 @@ public class ExpressionEvaluator {
     }
   }//end main
 
-  public static void printAtoms(boolean[] atoms) {
-    for (int i = 0; i < atoms.length; i++)
-      System.out.printf("%c %-5s ", i + 65, atoms[i]);
+  public static void printAtoms() {
+    for (int i = 0; i < Expression.atoms.length; i++)
+      System.out.printf("%c %-5s ", i + 65, Expression.atoms[i]);
   }
 }

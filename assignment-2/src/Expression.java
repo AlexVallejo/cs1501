@@ -8,6 +8,8 @@
 
 public class Expression {
 
+  public static boolean atoms[] = new boolean[26];
+
   private boolean value;
   private String line;
   private String rawLine;
@@ -22,7 +24,6 @@ public class Expression {
     this.line = line;
 
     this.root = buildTree(line);
-
   }
 
   //=================================
@@ -30,6 +31,13 @@ public class Expression {
   //==================================
 
   public static void setAtom(String atom, String value) {
+    int index = atom.charAt(0) - 65;
+
+    if (value.contains("true"))
+      atoms[index] = true;
+
+    else
+      atoms[index] = false;
   }
 
   public boolean evaluate() {
