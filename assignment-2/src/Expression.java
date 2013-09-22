@@ -21,7 +21,7 @@ public class Expression {
     line = line.replaceAll(" ", "");
     this.line = line;
 
-    this.root = buildTree(stripParenthesis(line));
+    this.root = buildTree(rmParenthesis(line));
 
   }
 
@@ -43,7 +43,6 @@ public class Expression {
   }
 
   public void normalize() {
-    this.value = false;
   }
 
   public void displayNormalized() {
@@ -62,201 +61,30 @@ public class Expression {
   //Custom helper methods!
   //==================================
 
-  private String operator(String line) throws ParseError{
+  private Node buildTree(String line) throws ParseError{
 
-    int position = 0, open = 0, closed = 0;
-
-    //Handles exressions of the form {atom} {op} {exp}
-    //{exp} can also be an atom
-    char c = line.charAt(0);
-
-    if (Character.isLetter(c)){
-      char op = line.charAt(1);
-      op = Character.toLowerCase(op);
-
-      if (op != 'v' && op != '!' && op != '^')
-         throw new ParseError("Expected an operator as the second character: " +
-                              line);
-      String opString = new String();
-      opString += op;
-
-      return opString;
-    }
-
-    //Handles nested expression ex: (A v B) ^ (B ^ A)
-    do {
-      c = line.charAt(position);
-
-      if ('(' == c)
-        open++;
-
-      if (')' == c)
-        closed++;
-
-      //We have identified the location of the operator
-      if (open == closed && open > 0){
-
-        if (position + 1 >= line.length())
-          throw new ParseError("Unexpected end of expression: " + line);
-
-        String op = new String();
-        op += line.charAt(position + 1);
-        return op;
-      }
-
-      position++;
-
-    } while (position < line.length());
-
-    throw new ParseError(line);
-  }
-
-  /**
-   * Identify and return the left sub-expression from a larger expression
-   * @param line the large expression the left sub-expression is to be
-   *             extracted from
-   * @return the left expression from the large expression
-   * @throws ParseError Thrown when the parenthesis do not match up
-   */
-  private Node leftExp(String line) throws ParseError{
-
-    int open = 0, closed = 0, position = 0;
-
-    // Base Cases
-    char firstChar = line.charAt(0);
-    if (Character.isLetter(firstChar)){
-
-      String op = new String();
-      op += line.charAt(1); //fixme assume operator is 2nd char
-
-      String leftAtom = new String();
-      leftAtom += firstChar; //fixme assume left atom is first char
-
-      String thirdChar = new String();
-      thirdChar += line.charAt(2);
-
-      //The base case where the expression is {atom} {op} {atom}
-      if (Character.isLetter(line.charAt(2))){
-        return new Node(op,new Node(leftAtom),new Node(thirdChar));
-      }
-
-      //The base case where the expression is {atom} {op} {exp}
-      else {
-        do {
-
-          char c = line.charAt(position);
-
-          if ('(' == c)
-            open++;
-
-          else if (')' == c)
-            closed++;
-
-          if (open == closed && open > 0){
-            String rightExp = line.substring(2, line.length());
-            return new Node(op, new Node(leftAtom), buildTree(rightExp));
-          }
-
-        } while (position < line.length());
-
-        throw new ParseError("Error in right half of expression: " + line);
-      }
-    }
-
-    //a single atom
-    if (isAtom(line))
-      return new Node(line);
-
-    //multiple expressions!
-    do {
-      char c = line.charAt(position);
-
-      if ('(' == c)
-        open++;
-
-      else if (')' == c)
-        closed++;
-
-      if (open == closed && open > 0){
-        String trimmedExp = line.substring(1,position);
-        return buildTree(trimmedExp);
-      }
-
-      position++;
-
-    } while (position < line.length());
-
-    throw new ParseError(line);
-  }
-
-  /**
-   * Identify and return the right sub-expression from a larger expression
-   * @param line the expression the right sub-expression is to be extracted
-   *             from
-   * @return the right expression from the large expression
-   * @throws ParseError Thrown when the parenthesis do not match up
-   */
-  private Node rightExp(String line) throws ParseError{
-    int open = 0, closed = 0;
-    int position = line.length() - 1; // -1 for array index offset
+    line = rmParenthesis(line);
 
     if (isAtom(line))
       return new Node(line);
 
-    char firstChar = line.charAt(position);
+    if(line.charAt(0) == '!')
+      return new Node(stringFromChar('!'), null, buildTree(line.substring(1,
+          line.length())));
 
-    if (Character.isLetter(firstChar)){
+    return new Node("Balls");
+  }
 
-      String op = new String();
-      op += line.charAt(position - 1); //fixme assume operator is 2nd to last
-      String rightAtom = new String();
-      rightAtom += line.charAt(position); //fixme assume right atom is last char
-
-      do {
-        char c = line.charAt(position);
-
-        if ('(' == c)
-          open++;
-
-        else if (')' == c)
-          closed++;
-
-        if (closed == open && open > 0){
-          int end = line.length() - 2; // -1 to exclude last atom
-                                       // -1 to exclude last operator
-                                       // ex: (A^B)^Z
-
-          String leftExp = line.substring(position, end);
-
-          return new Node(op, buildTree(leftExp), new Node(rightAtom));
-        }
-
-      } while (position >= 0);
-
-      throw new ParseError("Invalid expression in the left half: " + line);
-    }
-
-    do {
-      char c = line.charAt(position);
-
-      if ('(' == c)
-        open++;
-
-      else if (')' == c)
-        closed++;
-
-      if (open == closed && open > 0){
-
-        String op = new String();
-        op += line.substring(position + 1, line.length() - 1);
-        return buildTree(op);
-      }
-
-      position--;
-
-    } while (position >= 0);
-
-    throw new ParseError(line);
+  /**
+   * Essentially, a missing constructor for string. Creates a string from a
+   * single char
+   * @param c the char to become the string
+   * @return a string containing only c
+   */
+  private String stringFromChar(char c){
+    String str = new String();
+    str += c;
+    return str;
   }
 
   /**
@@ -273,36 +101,24 @@ public class Expression {
     return Character.isLetter(firstChar);
   }
 
-  private Node buildTree(String line) throws ParseError{
-
-    if (line.charAt(0) == '!'){
-      String operator = line.substring(0,1);
-      String internalExp = stripParenthesis(line.substring(1,line.length()));
-
-      return new Node(operator, null, buildTree(internalExp));
-    }
-
-    else if (isAtom(line))
-      return new Node(line);
-
-    else
-      return new Node(operator(line), leftExp(line), rightExp(line));
-  }
-
-  private String stripParenthesis(String line) throws ParseError{
+  /**
+   * Removes the parenthesis around an expression. EX: (AvB) -> AvB
+   * @param line the line to be stripped
+   * @return the expression without the enclosing parenthesis
+   * @throws ParseError Thrown if parenthesis do not match on the ends of the
+   * expression
+   */
+  private String rmParenthesis(String line) throws ParseError{
 
     if (isAtom(line))
       return line;
 
-    char first, last;
+    if (line.charAt(0) == '!')
+      return line;
 
-    first = line.charAt(0);
-    last = line.charAt(line.length() - 1);
-
-    if (first != '(' || last != ')')
-      throw new ParseError("Parenthesis mismatch: " + line);
-
-    else
+    if (line.charAt(0) == '(' && ')' == line.charAt(line.length() - 1))
       return line.substring(1,line.length() - 1);
+
+    throw new ParseError("Parenthesis mismatch: " + line);
   }
 }

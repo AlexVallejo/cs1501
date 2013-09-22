@@ -66,7 +66,6 @@ public class ExpressionEvaluator {
         }
 
         catch (ParseError pe){
-          System.out.println("\n" + pe);
           pe.printStackTrace();
 
           char input;

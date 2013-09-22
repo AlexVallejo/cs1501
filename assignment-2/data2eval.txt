@@ -24,11 +24,4 @@ W true
 X true
 Y true
 Z true
-((A ^ B) ^ Z)
-(X v (! Y))
-(R v S
-((! (! A)) ^ (B v (! C)))
-((! X) ^ (B v ((! D) v (! (! C)))))
-(((P v (! Q)) ^ S) ^ ((W v (! (! (! Z)))) v T))
-(K + V)
-(((P v Q) ^ (R v S)) ^ ((T v U) ^ ((V v W) ^ (X v Y))))
+M
