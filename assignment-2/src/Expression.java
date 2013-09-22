@@ -30,8 +30,17 @@ public class Expression {
   //Methods Required by the assignment
   //==================================
 
-  public static void setAtom(String atom, String value) {
+  /**
+   * Set an atom for the entire Expression class. Used in the drivers.
+   * @param atom the atom to be set (must be a letter)
+   * @param value
+   */
+  public static void setAtom(String atom, String value) throws ParseError{
     int index = atom.charAt(0) - 65;
+
+    if (!Character.isLetter(index))
+      throw new ParseError("Invalidd Atom: " + atom + " is not a recognized "
+                           + "letter");
 
     if (value.contains("true"))
       atoms[index] = true;
@@ -45,6 +54,13 @@ public class Expression {
     return false;
   }
 
+  /**
+   * Copies the expression be using the raw text originally assigned to the
+   * expression as an argument to the constructor of the new expression,
+   * effectively copying the other expression.
+   * @return a copy of this expression
+   * @throws ParseError if there is an error in building the copy
+   */
   public Expression copy() throws ParseError{
     return new Expression(this.rawLine);
   }
@@ -52,11 +68,25 @@ public class Expression {
   public void normalize() {
   }
 
-  public void displayNormalized() {
-    TreeDisplay display = new TreeDisplay(this.rawLine);
-    display.setRoot(this.root);
+  /**
+   * Copy this Expression, normalize it then display the normalized tree
+   * @throws ParseError if there is an error in building the copy
+   */
+  public void displayNormalized() throws ParseError{
+    Expression copiedExpression = this.copy();
+
+    copiedExpression.normalize();
+
+    TreeDisplay display = new TreeDisplay(copiedExpression.rawLine +
+                                          " normalized");
+
+    display.setRoot(copiedExpression.root);
   }
 
+  /**
+   * Evaluates the expression if it's not been evaluated already.
+   * @return The original expression with it's value. EX: (A v B) = false
+   */
   public String toString() {
     if (!this.evaluated)
       evaluate();

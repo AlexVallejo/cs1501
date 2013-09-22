@@ -15,7 +15,6 @@ import java.util.Scanner;
 public class ExpressionEvaluator {
   public static void main(String args[]) {
 
-    boolean atoms[];
     ArrayList<Expression> exps = new ArrayList<Expression>();
 
     if (args.length != 1) {
@@ -37,17 +36,23 @@ public class ExpressionEvaluator {
         String str = new String();
         str += line.charAt(0);
 
-        if (line.contains("true"))
-          Expression.setAtom(str,"true");
+        try {
+          if (line.contains("true"))
+            Expression.setAtom(str,"true");
 
-        else if (line.contains("false"))
-          Expression.setAtom(str,"false");
+          else if (line.contains("false"))
+            Expression.setAtom(str,"false");
 
-        else {
-          System.out.println("There must be 26 atoms declared.");
-          System.out.println("Error reading line #" + i);
-          System.out.printf("line %d: %s", i, line);
-          continue;
+          else {
+            System.out.println("There must be 26 atoms declared.");
+            System.out.println("Error reading line #" + i + 1);
+            System.out.printf("line %d: %s", i + 1, line);
+            continue;
+          }
+        }
+
+        catch (ParseError pe){
+          System.out.println(pe);
         }
       }
 
