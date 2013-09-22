@@ -33,8 +33,7 @@ public class Expression {
   }
 
   public boolean evaluate() {
-
-    //ToDo set value to evulation
+    //ToDo actually evaluate the value!
     return false;
   }
 
@@ -83,9 +82,90 @@ public class Expression {
     if (isAtom(first) && isOp(op) && isAtom(last))
       return new Node(strFrmChar(op), new Node(first), new Node(last));
 
+    return new Node(op(line),buildTree(leftExp(line)),buildTree(rightExp(line)));
+  }
 
+  /**
+   * Returns the operator of an expression
+   * @param line the expression to be examined for an operator
+   * @return the operator found within line
+   * @throws ParseError thrown if the operator is not found
+   */
+  private String op(String line) throws ParseError{
 
-    return new Node("Balls");
+    int open = 0, closed = 0, pos = 0;
+
+    do {
+      char c = line.charAt(pos);
+
+      if ('(' == c)
+        open++;
+
+      else if (')' == c)
+        closed++;
+
+      if (open == closed && open > 0)
+        return strFrmChar(line.charAt(pos + 1));
+
+      pos++;
+    } while (pos < line.length());
+
+    throw new ParseError("Parenthesis mismatch: " + line);
+  }
+
+  /**
+   * Returns the left expression of the larger expression
+   * @param line the line the left expression wil lbe extracted from
+   * @return the left expression of the larger expression
+   * @throws ParseError thrown if a left expression is not found
+   */
+  private String leftExp(String line) throws ParseError{
+    int open = 0, closed = 0, pos = 0;
+
+    do {
+      char c = line.charAt(pos);
+
+      if ('(' == c)
+        open++;
+
+      else if (')' == c)
+        closed++;
+
+      if (open == closed && open > 0)
+        return line.substring(0, pos + 1); //ToDo includes parenthesis
+
+      pos++;
+
+    } while (pos < line.length());
+
+    throw new ParseError("Parenthesis Mismatch: " + line);
+  }
+
+  /**
+   * Extracts the right expression from a larger expression
+   * @param line the line the right expression will be extracted from
+   * @return the right expression in line
+   * @throws ParseError thrown if no right expression is found
+   */
+  private String rightExp(String line) throws ParseError{
+    int open = 0, closed = 0, pos = line.length() - 1;
+
+    do {
+      char c = line.charAt(pos);
+
+      if ('(' == c)
+        open++;
+
+      else if (')' == c)
+        closed++;
+
+      if (open == closed && open > 0)
+        return line.substring(pos, line.length()); //ToDo include parenthesis
+
+      pos--;
+    } while (pos >= 0);
+
+    throw new ParseError("Parenthesis mismatch: " + line);
   }
 
   /**
@@ -146,12 +226,24 @@ public class Expression {
    */
   private String rmParenthesis(String line) throws ParseError{
 
+    //Base case: => {atom}
     if (isAtom(line))
       return line;
 
+    //Base case: => !{exp}
     if (line.charAt(0) == '!')
       return line;
 
+    char first, op, second;
+    first = line.charAt(0);
+    op = line.charAt(1);
+    second = line.charAt(2);
+
+    //Base case: => {atom} {exp} {atom}
+    if (isAtom(first) && isOp(op) && isAtom(second))
+      return line;
+
+    //If valid, line MUST be of this form: => ({exp} {op} {exp})
     if (line.charAt(0) == '(' && ')' == line.charAt(line.length() - 1))
       return line.substring(1,line.length() - 1);
 
