@@ -21,7 +21,7 @@ public class Expression {
     line = line.replaceAll(" ", "");
     this.line = line;
 
-    this.root = buildTree(rmParenthesis(line));
+    this.root = buildTree(line);
 
   }
 
@@ -65,12 +65,27 @@ public class Expression {
 
     line = rmParenthesis(line);
 
+    //Base case: line => {atom}
     if (isAtom(line))
       return new Node(line);
 
+    //line => !{exp}
     if(line.charAt(0) == '!')
-      return new Node(stringFromChar('!'), null, buildTree(line.substring(1,
+      return new Node(strFrmChar('!'), null, buildTree(line.substring(1,
           line.length())));
+
+    char first, op, last;
+    first = line.charAt(0);
+    op = line.charAt(1);
+    last = line.charAt(2);
+
+    //Base case: line => {exp} {op} {exp}
+    if (isAtom(first) && isOp(op) && isAtom(last))
+      return new Node(strFrmChar(op),
+                      new Node(strFrmChar(first)),
+                      new Node(strFrmChar(last)));
+
+
 
     return new Node("Balls");
   }
@@ -81,10 +96,33 @@ public class Expression {
    * @param c the char to become the string
    * @return a string containing only c
    */
-  private String stringFromChar(char c){
+  private String strFrmChar(char c){
     String str = new String();
     str += c;
     return str;
+  }
+
+  /**
+   * Determines if a character is an operator or not according to the grammar
+   * defined by the assignment
+   * @param c the character to be assessed
+   * @return true if c is an operator, false otherwise
+   */
+  private boolean isOp(char c){
+    if (c == 'v' || c == '^')
+      return true;
+
+    else
+      return false;
+  }
+
+  /**
+   * Decide if a character is an atom or not
+   * @param c the character to be assessed
+   * @return true if c is an atom, false otherwise
+   */
+  private boolean isAtom(char c){
+    return Character.isLetter(c);
   }
 
   /**

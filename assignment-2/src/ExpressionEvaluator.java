@@ -58,11 +58,10 @@ public class ExpressionEvaluator {
           Expression exp = new Expression(line);
           exp.displayNormalized();
           exps.add(exp);
-
-          System.out.print("Ready to continue? (y/n): ");
-          keyboard.nextLine();
-
           System.out.println(exp);
+
+          System.out.print("\nReady to continue? (y/n): ");
+          keyboard.nextLine();
         }
 
         catch (ParseError pe){
