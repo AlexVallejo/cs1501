@@ -95,6 +95,22 @@ public class Expression {
 
     int open = 0, closed = 0, pos = 0;
 
+    //ToDo throws ParseError if line.length < 2
+    char first, op, last, endOp;
+    first = line.charAt(0);
+    op = line.charAt(1);
+    last = line.charAt(line.length() - 1);
+    endOp = line.charAt(line.length() - 2);
+
+    //Base case: => {atom} {op} {exp}
+    if (isAtom(first) && isOp(op))
+      return strFrmChar(op);
+
+    //Base case: => {exp} {op} {atom}
+    if (isAtom(last) && isOp(endOp))
+      return strFrmChar(endOp);
+
+    //Handles fully parenthesized expressions
     do {
       char c = line.charAt(pos);
 
@@ -122,6 +138,13 @@ public class Expression {
   private String leftExp(String line) throws ParseError{
     int open = 0, closed = 0, pos = 0;
 
+    char first = line.charAt(pos);
+
+    //Base case: => {atom} {op} {exp}
+    if (isAtom(first))
+      return strFrmChar(first);
+
+    //Fully parenthesized expression ex: ({exp} {op} {exp})
     do {
       char c = line.charAt(pos);
 
@@ -131,8 +154,10 @@ public class Expression {
       else if (')' == c)
         closed++;
 
-      if (open == closed && open > 0)
-        return line.substring(0, pos + 1); //ToDo includes parenthesis
+      if (open == closed && open > 0){
+        String str = line.substring(0, pos + 1);
+        return str; //ToDo includes parenthesis
+      }
 
       pos++;
 
@@ -150,6 +175,13 @@ public class Expression {
   private String rightExp(String line) throws ParseError{
     int open = 0, closed = 0, pos = line.length() - 1;
 
+    char last = line.charAt(pos);
+
+    //Base case: => {exp} {op} {atom}
+    if (isAtom(last))
+      return strFrmChar(last);
+
+    //Fully parenthesized expression ex: ({exp} {op} {exp})
     do {
       char c = line.charAt(pos);
 
@@ -159,8 +191,10 @@ public class Expression {
       else if (')' == c)
         closed++;
 
-      if (open == closed && open > 0)
-        return line.substring(pos, line.length()); //ToDo include parenthesis
+      if (open == closed && open > 0){
+        String str = line.substring(pos, line.length());
+        return str; //ToDo include parenthesis
+      }
 
       pos--;
     } while (pos >= 0);
@@ -234,17 +268,31 @@ public class Expression {
     if (line.charAt(0) == '!')
       return line;
 
-    char first, op, second;
+    //Get the required chars to decide if the line should not have
+    // parenthesis removed
+    char first, op, second, last, endOp;
     first = line.charAt(0);
     op = line.charAt(1);
     second = line.charAt(2);
+    last = line.charAt(line.length() - 1);
+    endOp = line.charAt(line.length() - 2); //op could be second to last
+                                            //{exp} {op} {atom}
+                                            //ex: (AvB)^x
 
     //Base case: => {atom} {exp} {atom}
     if (isAtom(first) && isOp(op) && isAtom(second))
       return line;
 
+    //Base case: => {atom} {op} {exp} ex: Av(B^Y)
+    if (isAtom(first) && isOp(op))
+      return line;
+
+    //Base case: => {exp} {op} {atom} ex:
+    if (isAtom(last) && isOp(endOp))
+      return line;
+
     //If valid, line MUST be of this form: => ({exp} {op} {exp})
-    if (line.charAt(0) == '(' && ')' == line.charAt(line.length() - 1))
+    if ('(' == first && ')' == last)
       return line.substring(1,line.length() - 1);
 
     throw new ParseError("Parenthesis mismatch: " + line);

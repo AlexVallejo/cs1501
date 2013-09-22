@@ -24,4 +24,5 @@ W true
 X true
 Y true
 Z true
-((A ^ B) v (C v D))
+((A ^ B) ^ Z)
+(Z ^ (A ^ B))
