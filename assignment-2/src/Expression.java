@@ -47,7 +47,7 @@ public class Expression {
   }
 
   public void displayNormalized() {
-    TreeDisplay display = new TreeDisplay(this.line);
+    TreeDisplay display = new TreeDisplay(this.rawLine);
     display.setRoot(this.root);
   }
 
@@ -55,7 +55,7 @@ public class Expression {
     if (!this.evaluated)
       evaluate();
 
-    return line + " = " + this.value;
+    return this.rawLine + " = " + this.value;
   }
 
   //==================================
@@ -65,20 +65,25 @@ public class Expression {
   private String operator(String line) throws ParseError{
 
     int position = 0, open = 0, closed = 0;
-    char c;
 
-    //Handles the operator in a standalone expression "A v B"
-    c = line.charAt(0);
+    //Handles exressions of the form {atom} {op} {exp}
+    //{exp} can also be an atom
+    char c = line.charAt(0);
+
     if (Character.isLetter(c)){
+      char op = line.charAt(1);
+      op = Character.toLowerCase(op);
 
-      if (line.length() != 3)
-        throw new ParseError(line);
+      if (op != 'v' && op != '!' && op != '^')
+         throw new ParseError("Expected an operator as the second character: " +
+                              line);
+      String opString = new String();
+      opString += op;
 
-      else
-        return line.substring(1,2);
+      return opString;
     }
 
-    //Handles nested expression (A v B) ^ (B ^ A)
+    //Handles nested expression ex: (A v B) ^ (B ^ A)
     do {
       c = line.charAt(position);
 
@@ -88,11 +93,15 @@ public class Expression {
       if (')' == c)
         closed++;
 
+      //We have identified the location of the operator
       if (open == closed && open > 0){
-        if (line.length() <= position + 2)
-          return null;
-        return line.substring(position + 1, position + 2);
 
+        if (position + 1 >= line.length())
+          throw new ParseError("Unexpected end of expression: " + line);
+
+        String op = new String();
+        op += line.charAt(position + 1);
+        return op;
       }
 
       position++;
@@ -111,22 +120,54 @@ public class Expression {
    */
   private Node leftExp(String line) throws ParseError{
 
-    int open = 0, closed = 0, position = 1;
+    int open = 0, closed = 0, position = 0;
 
+    // Base Cases
     char firstChar = line.charAt(0);
     if (Character.isLetter(firstChar)){
-      assert (line.length() == 3) : "Expected length of 3: " + line;
 
-      Node rightAtom = new Node(line.substring(0,1));
-      String operator = line.substring(1,2);
-      Node leftAtom = new Node(line.substring(2,3));
+      String op = new String();
+      op += line.charAt(1); //fixme assume operator is 2nd char
 
-      return new Node(operator, rightAtom, leftAtom);
+      String leftAtom = new String();
+      leftAtom += firstChar; //fixme assume left atom is first char
+
+      String thirdChar = new String();
+      thirdChar += line.charAt(2);
+
+      //The base case where the expression is {atom} {op} {atom}
+      if (Character.isLetter(line.charAt(2))){
+        return new Node(op,new Node(leftAtom),new Node(thirdChar));
+      }
+
+      //The base case where the expression is {atom} {op} {exp}
+      else {
+        do {
+
+          char c = line.charAt(position);
+
+          if ('(' == c)
+            open++;
+
+          else if (')' == c)
+            closed++;
+
+          if (open == closed && open > 0){
+            String rightExp = line.substring(2, line.length());
+            return new Node(op, new Node(leftAtom), buildTree(rightExp));
+          }
+
+        } while (position < line.length());
+
+        throw new ParseError("Error in right half of expression: " + line);
+      }
     }
 
+    //a single atom
     if (isAtom(line))
       return new Node(line);
 
+    //multiple expressions!
     do {
       char c = line.charAt(position);
 
@@ -136,8 +177,10 @@ public class Expression {
       else if (')' == c)
         closed++;
 
-      if (open == closed && open > 0)
-        buildTree(line.substring(1,position));
+      if (open == closed && open > 0){
+        String trimmedExp = line.substring(1,position);
+        return buildTree(trimmedExp);
+      }
 
       position++;
 
@@ -155,23 +198,42 @@ public class Expression {
    */
   private Node rightExp(String line) throws ParseError{
     int open = 0, closed = 0;
-    int position = line.length() - 2; // -1 for array index offset and -1 to
-                                      // skip last closing parenthesis
+    int position = line.length() - 1; // -1 for array index offset
 
     if (isAtom(line))
       return new Node(line);
 
-    char firstChar = line.charAt(0);
+    char firstChar = line.charAt(position);
 
-    if (Character.isLetter(firstChar)){ //ToDo Assume proper format
+    if (Character.isLetter(firstChar)){
 
-      assert (line.length() == 3) : "Expected length of 3: " + line;
+      String op = new String();
+      op += line.charAt(position - 1); //fixme assume operator is 2nd to last
+      String rightAtom = new String();
+      rightAtom += line.charAt(position); //fixme assume right atom is last char
 
-      Node rightAtom = new Node(line.substring(0,1));
-      String operator = line.substring(1,2);
-      Node leftAtom = new Node(line.substring(2,3));
+      do {
+        char c = line.charAt(position);
 
-      return new Node(operator, rightAtom, leftAtom);
+        if ('(' == c)
+          open++;
+
+        else if (')' == c)
+          closed++;
+
+        if (closed == open && open > 0){
+          int end = line.length() - 2; // -1 to exclude last atom
+                                       // -1 to exclude last operator
+                                       // ex: (A^B)^Z
+
+          String leftExp = line.substring(position, end);
+
+          return new Node(op, buildTree(leftExp), new Node(rightAtom));
+        }
+
+      } while (position >= 0);
+
+      throw new ParseError("Invalid expression in the left half: " + line);
     }
 
     do {
@@ -180,11 +242,15 @@ public class Expression {
       if ('(' == c)
         open++;
 
-      if (')' == c)
+      else if (')' == c)
         closed++;
 
-      if (open == closed && open > 0)
-        buildTree(line.substring(position, line.length()));
+      if (open == closed && open > 0){
+
+        String op = new String();
+        op += line.substring(position + 1, line.length() - 1);
+        return buildTree(op);
+      }
 
       position--;
 
@@ -204,13 +270,7 @@ public class Expression {
 
     char firstChar = line.charAt(0);
 
-    if (Character.isLetter(firstChar))
-      return true;
-
-    else
-      return false;
-
-
+    return Character.isLetter(firstChar);
   }
 
   private Node buildTree(String line) throws ParseError{
@@ -218,7 +278,6 @@ public class Expression {
     if (line.charAt(0) == '!'){
       String operator = line.substring(0,1);
       String internalExp = stripParenthesis(line.substring(1,line.length()));
-
 
       return new Node(operator, null, buildTree(internalExp));
     }
@@ -231,13 +290,14 @@ public class Expression {
   }
 
   private String stripParenthesis(String line) throws ParseError{
+
+    if (isAtom(line))
+      return line;
+
     char first, last;
 
     first = line.charAt(0);
     last = line.charAt(line.length() - 1);
-
-    if (isAtom(line))
-      return line;
 
     if (first != '(' || last != ')')
       throw new ParseError("Parenthesis mismatch: " + line);
