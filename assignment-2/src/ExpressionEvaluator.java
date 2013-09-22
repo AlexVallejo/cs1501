@@ -59,9 +59,6 @@ public class ExpressionEvaluator {
           exp.displayNormalized();
           exps.add(exp);
           System.out.println(exp);
-
-          System.out.print("\nReady to continue? (y/n): ");
-          keyboard.nextLine();
         }
 
         catch (ParseError pe){

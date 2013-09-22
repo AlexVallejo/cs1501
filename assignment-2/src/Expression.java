@@ -73,6 +73,11 @@ public class Expression {
       return new Node(strFrmChar('!'), null, buildTree(line.substring(1,
           line.length())));
 
+    //At this point, the expression must be at least {atom/exp} {op} {atom/exp}
+    if (line.length() < 3)
+      throw new ParseError("Expression incomplete: " + this.rawLine + "\nThe " +
+                           "problem: " + line);
+
     char first, op, last;
     first = line.charAt(0);
     op = line.charAt(1);
@@ -126,7 +131,11 @@ public class Expression {
       pos++;
     } while (pos < line.length());
 
-    throw new ParseError("Parenthesis mismatch: " + line);
+    if (!isOp(op))
+      throw new ParseError("Invalid operator: " + op + " in " + this.rawLine);
+
+    throw new ParseError("Parenthesis mismatch: " + this.rawLine + "\nThe " +
+                         "problem: " + line);
   }
 
   /**
@@ -163,7 +172,8 @@ public class Expression {
 
     } while (pos < line.length());
 
-    throw new ParseError("Parenthesis Mismatch: " + line);
+    throw new ParseError("Parenthesis Mismatch: " + this.rawLine + "\nThe " +
+        "Problem: " + line);
   }
 
   /**
@@ -268,6 +278,10 @@ public class Expression {
     if (line.charAt(0) == '!')
       return line;
 
+    //At this point, the expression MUST be at least {atom/exp} {op} {atom/exp}
+    if (line.length() < 3)
+      throw new ParseError("Expression incomplete: " + line);
+
     //Get the required chars to decide if the line should not have
     // parenthesis removed
     char first, op, second, last, endOp;
@@ -283,18 +297,20 @@ public class Expression {
     if (isAtom(first) && isOp(op) && isAtom(second))
       return line;
 
-    //Base case: => {atom} {op} {exp} ex: Av(B^Y)
+    //Base case: => {atom} {op} {exp}
     if (isAtom(first) && isOp(op))
       return line;
 
-    //Base case: => {exp} {op} {atom} ex:
+    //Base case: => {exp} {op} {atom}
     if (isAtom(last) && isOp(endOp))
       return line;
 
+    //General case
     //If valid, line MUST be of this form: => ({exp} {op} {exp})
     if ('(' == first && ')' == last)
       return line.substring(1,line.length() - 1);
 
-    throw new ParseError("Parenthesis mismatch: " + line);
+    throw new ParseError("Parenthesis mismatch: " + this.rawLine + "\nThe " +
+                         "problem:" + line);
   }
 }
