@@ -91,7 +91,23 @@ public class Expression {
     return new Expression(this.rawLine);
   }
 
+  /**
+   * Normalizes this tree.
+   */
   public void normalize() {
+
+    boolean change;
+
+    do {
+      change = false;
+
+      if (squashNegatives(this.root))
+        change = true;
+
+      if (negateOp(this.root))
+        change = true;
+
+    } while(change);
   }
 
   /**
@@ -99,21 +115,24 @@ public class Expression {
    * @throws ParseError if there is an error in building the copy
    */
   public void displayNormalized() throws ParseError{
-    Expression copiedExpression = this.copy();
+    /*Expression copiedExpression = this.copy();
 
     copiedExpression.normalize();
 
     TreeDisplay display = new TreeDisplay(copiedExpression.rawLine +
                                           " normalized");
 
-    display.setRoot(copiedExpression.root);
+    display.setRoot(copiedExpression.root);*/
+
+    TreeDisplay disp = new TreeDisplay(this.rawLine);
+    disp.setRoot(this.root);
   }
 
   /**
    * Evaluates the expression if it's not been evaluated already.
    * @return The original expression with it's value. EX: (A v B) = false
    */
-  public String toString() {
+  public String toString(){
     if (!this.evaluated)
       evaluate();
 
@@ -121,7 +140,128 @@ public class Expression {
   }
 
   //==================================
-  //Custom helper methods!
+  // Custom methods!
+  //==================================
+
+  //==================================
+  // Normalize methods
+  //==================================
+
+  private boolean squashNegatives(Node subT){
+
+    if (subT == null || subT.isLeaf())
+      return false;
+
+    boolean modified = false;
+
+    if (subT.right != null && subT.right.right != null)
+      if (subT.right.symbol.equals("!") && subT.right.right.symbol.equals("!"))
+        if (subT.right.right.right != null){
+          subT.right = subT.right.right.right;
+          modified = true;
+        }
+
+    if (subT.left!= null && subT.left.right != null)
+      if (subT.left.symbol.equals("!") && subT.left.right.symbol.equals("!"))
+        if (subT.left.right.right != null){
+          subT.left = subT.left.right.right;
+          modified = true;
+        }
+
+    //if (subT.hasRight())
+      if (squashNegatives(subT.right))
+        modified = true;
+
+    //if (subT.hasLeft())
+      if (squashNegatives(subT.left))
+        modified = true;
+
+    return modified;
+  }
+
+  private boolean negateOp(Node subT){
+    boolean modified = false;
+
+    if (subT.isLeaf())
+      return false;
+
+    Node rightChild = subT.right;
+    Node leftChild = subT.left;
+
+    if (subT.symbol.equals("!") && isOp(rightChild.symbol.charAt(0))){
+      rightChild = flipOp(rightChild);
+
+      Node insert = new Node("!", null, rightChild);
+      rightChild = insert;
+
+      insertNeg(rightChild, 'r');
+      insertNeg(rightChild, 'l');
+
+      negateOp(rightChild);
+      negateOp(leftChild);
+
+      modified = true;
+    }
+
+    else if (subT.symbol.equals("^")){
+      Node left = subT.left;
+      Node right = subT.right;
+
+      if (left.symbol.equals("v") || right.symbol.equals("v")){
+        insertNeg(subT, 'r');
+        insertNeg(subT,'l');
+      }
+    }
+
+    else{
+      if (negateOp(rightChild))
+        modified = true;
+
+      if (leftChild != null && negateOp(leftChild))
+        modified = true;
+    }
+
+    return modified;
+  }
+
+  private Node flipOp(Node subT){
+
+    if (subT.symbol.equals("^"))
+      subT.symbol = "v";
+
+    else if (subT.symbol.equals("v"))
+      subT.symbol = "^";
+
+    return subT;
+  }
+
+  /**
+   * Insert a negation node between the node passed as an argument and it's
+   * right or left child as specified by the half parameter
+   * @param subT the node that will have a negative inserted as it's child
+   * @param half the half of the node to insert the negative on. Accepts 'l'
+   *             or 'r'
+   */
+  private void insertNeg(Node subT, char half){
+    Node insert;
+
+    if (half =='r'){
+      insert = new Node("!", null, subT.right);
+      subT.right = insert;
+    }
+
+    else if (half == 'l'){
+      insert = new Node("!", null, subT.left);
+      subT.left = insert;
+    }
+
+    else
+      throw new RuntimeException("Used non accepted value in insertNeg for " +
+          "the half to insert the negative at. (Pick 'l' or 'r'");
+  }
+
+  //==================================
+  // Tree builder methods
   //==================================
 
   private Node buildTree(String line) throws ParseError{
