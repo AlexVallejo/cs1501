@@ -73,7 +73,7 @@ public class Expression {
       boolean left = evaluate(subT.left);
       boolean right = evaluate(subT.right);
 
-      return left && right;
+      return left || right;
     }
 
     //The only operator left is the negation
@@ -95,19 +95,53 @@ public class Expression {
    * Normalizes this tree.
    */
   public void normalize() {
+    this.root = normalize(this.root);
+  }
 
-    boolean change;
+  private Node normalize(Node node){
+    if (node.isLeaf())
+      return node;
 
-    do {
-      change = false;
+    else if (node.symbol.equals("!"))
+      if (node.right.symbol.equals("!")){
+        node = normalize(node.right.right);
+      }
 
-      if (squashNegatives(this.root))
-        change = true;
+    else if (node.symbol.equals("!"))
+      if (node.right.symbol.equals("^")){
+        node.right.symbol = "v";
 
-      if (negateOp(this.root))
-        change = true;
+        node = insertNegs(node);
 
-    } while(change);
+        node.right = normalize(node.right);
+        node.left = normalize(node.left);
+      }
+
+    else if (node.symbol.equals("!"))
+      if (node.right.symbol.equals("v")){
+        node = node.right;
+        node.symbol = "^";
+
+        node = insertNegs(node);
+
+        node.right = normalize(node.right);
+        node.left = normalize(node.left);
+      }
+
+    else if (node.symbol.equals("^"))
+      if (node.right.symbol.equals("v")){
+        node.symbol = "v";
+        Node subTR = new Node("^", node.right.left, node.right);
+        Node subTL = new Node("^", node.right.right, node.right);
+
+        node.right = subTR;
+        node.left = subTL;
+
+        node.right = normalize(node.right);
+        node.left = normalize(node.left);
+      }
+
+    return node;
   }
 
   /**
@@ -115,17 +149,15 @@ public class Expression {
    * @throws ParseError if there is an error in building the copy
    */
   public void displayNormalized() throws ParseError{
-    /*Expression copiedExpression = this.copy();
-
-    copiedExpression.normalize();
-
-    TreeDisplay display = new TreeDisplay(copiedExpression.rawLine +
-                                          " normalized");
-
-    display.setRoot(copiedExpression.root);*/
 
     TreeDisplay disp = new TreeDisplay(this.rawLine);
     disp.setRoot(this.root);
+
+    Expression copiedExpression = this.copy();
+    copiedExpression.normalize();
+    TreeDisplay normal = new TreeDisplay(copiedExpression.rawLine +
+                                          " normalized");
+    normal.setRoot(copiedExpression.root);
   }
 
   /**
@@ -235,29 +267,23 @@ public class Expression {
     return subT;
   }
 
-  /**
+  /** //ToDo change this to reflect new implementation
    * Insert a negation node between the node passed as an argument and it's
    * right or left child as specified by the half parameter
    * @param subT the node that will have a negative inserted as it's child
    * @param half the half of the node to insert the negative on. Accepts 'l'
    *             or 'r'
    */
-  private void insertNeg(Node subT, char half){
-    Node insert;
+  private Node insertNegs(Node subT){
+    Node iR, iL;
 
-    if (half =='r'){
-      insert = new Node("!", null, subT.right);
-      subT.right = insert;
-    }
+    iR = new Node("!", null, subT.right);
+    iL = new Node("!", null, subT.left);
 
-    else if (half == 'l'){
-      insert = new Node("!", null, subT.left);
-      subT.left = insert;
-    }
+    subT.right = iR;
+    subT.left = iL;
 
-    else
-      throw new RuntimeException("Used non accepted value in insertNeg for " +
-          "the half to insert the negative at. (Pick 'l' or 'r'");
+    return subT;
   }
 
   //==================================
