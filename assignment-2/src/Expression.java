@@ -102,14 +102,20 @@ public class Expression {
     if (node.isLeaf())
       return node;
 
+    if (node.symbol.equals("!") && node.right.isLeaf())
+      return node;
+
+    //Remove chained negations
     else if (node.symbol.equals("!"))
       if (node.right.symbol.equals("!")){
         node = normalize(node.right.right);
       }
 
+    //Remove a negation above an operator
     else if (node.symbol.equals("!"))
       if (node.right.symbol.equals("^")){
-        node.right.symbol = "v";
+        node = node.right;
+        node.symbol = "v";
 
         node = insertNegs(node);
 
@@ -128,11 +134,12 @@ public class Expression {
         node.left = normalize(node.left);
       }
 
-    else if (node.symbol.equals("^"))
+    //Convert any and above an or to an or and distribute inside the tree
+    if (node.symbol.equals("^")){
       if (node.right.symbol.equals("v")){
         node.symbol = "v";
-        Node subTR = new Node("^", node.right.left, node.right);
-        Node subTL = new Node("^", node.right.right, node.right);
+        Node subTL = new Node("^", node.left, node.right.left);
+        Node subTR = new Node("^", node.left, node.right.right);
 
         node.right = subTR;
         node.left = subTL;
@@ -140,6 +147,19 @@ public class Expression {
         node.right = normalize(node.right);
         node.left = normalize(node.left);
       }
+
+      if (node.left.symbol.equals("v")){
+        node.symbol = "v";
+        Node subTR = new Node("^", node.left.right, node.left);
+        Node subTL = new Node("^", node.left.left, node.left);
+
+        node.right = subTR;
+        node.left = subTL;
+
+        node.right = normalize(node.right);
+        node.left = normalize(node.left);
+      }
+    }
 
     return node;
   }
@@ -178,94 +198,6 @@ public class Expression {
   //==================================
   // Normalize methods
   //==================================
-
-  private boolean squashNegatives(Node subT){
-
-    if (subT == null || subT.isLeaf())
-      return false;
-
-    boolean modified = false;
-
-    if (subT.right != null && subT.right.right != null)
-      if (subT.right.symbol.equals("!") && subT.right.right.symbol.equals("!"))
-        if (subT.right.right.right != null){
-          subT.right = subT.right.right.right;
-          modified = true;
-        }
-
-    if (subT.left!= null && subT.left.right != null)
-      if (subT.left.symbol.equals("!") && subT.left.right.symbol.equals("!"))
-        if (subT.left.right.right != null){
-          subT.left = subT.left.right.right;
-          modified = true;
-        }
-
-    //if (subT.hasRight())
-      if (squashNegatives(subT.right))
-        modified = true;
-
-    //if (subT.hasLeft())
-      if (squashNegatives(subT.left))
-        modified = true;
-
-    return modified;
-  }
-
-  private boolean negateOp(Node subT){
-    boolean modified = false;
-
-    if (subT.isLeaf())
-      return false;
-
-    Node rightChild = subT.right;
-    Node leftChild = subT.left;
-
-    if (subT.symbol.equals("!") && isOp(rightChild.symbol.charAt(0))){
-      rightChild = flipOp(rightChild);
-
-      Node insert = new Node("!", null, rightChild);
-      rightChild = insert;
-
-      insertNeg(rightChild, 'r');
-      insertNeg(rightChild, 'l');
-
-      negateOp(rightChild);
-      negateOp(leftChild);
-
-      modified = true;
-    }
-
-    else if (subT.symbol.equals("^")){
-      Node left = subT.left;
-      Node right = subT.right;
-
-      if (left.symbol.equals("v") || right.symbol.equals("v")){
-        insertNeg(subT, 'r');
-        insertNeg(subT,'l');
-      }
-    }
-
-    else{
-      if (negateOp(rightChild))
-        modified = true;
-
-      if (leftChild != null && negateOp(leftChild))
-        modified = true;
-    }
-
-    return modified;
-  }
-
-  private Node flipOp(Node subT){
-
-    if (subT.symbol.equals("^"))
-      subT.symbol = "v";
-
-    else if (subT.symbol.equals("v"))
-      subT.symbol = "^";
-
-    return subT;
-  }
 
   /** //ToDo change this to reflect new implementation
    * Insert a negation node between the node passed as an argument and it's
