@@ -105,11 +105,16 @@ public class Expression {
     if (node.symbol.equals("!") && node.right.isLeaf())
       return node;
 
-    //Remove chained negations
-    else if (node.symbol.equals("!"))
+    //Remove chained negations. Works for a negation as a root node!
+    if (node.symbol.equals("!"))
       if (node.right.symbol.equals("!")){
         node = normalize(node.right.right);
       }
+
+    else if (node.right.symbol.equals("!"))
+        if (node.right.right.symbol.equals("!")){
+          node = normalize(node.right.right.right);
+        }
 
     //Remove a negation above an operator
     else if (node.symbol.equals("!"))
