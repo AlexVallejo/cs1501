@@ -69,7 +69,7 @@ public class ExpressionEvaluator {
           Expression exp = new Expression(line);
           exp.displayNormalized();
           exps.add(exp);
-          System.out.println(exp);
+          System.out.println("\n" + exp);
         }
 
         catch (ParseError pe){
@@ -77,20 +77,23 @@ public class ExpressionEvaluator {
 
           char input;
 
-          do {
-            System.out.print("\n" + "Do you want to continue (y/n):");
-            input = keyboard.nextLine().charAt(0);
-
-            if (input == 'n')
-              System.exit(0);
-
-          } while (input != 'y');
-
           System.out.println();
         }
+
+        char input;
+        do {
+          System.out.print("Do you want to continue (y/n):");
+          input = keyboard.nextLine().charAt(0);
+
+          if (input == 'n')
+            System.exit(0);
+
+        } while (input != 'y');
+
       } while (line != null);
 
       System.out.println("\nEnd of file reached");
+      System.exit(0);
     }//End buffered reader exception
 
     catch (IOException ex) {

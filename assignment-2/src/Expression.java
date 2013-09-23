@@ -36,11 +36,14 @@ public class Expression {
    * @param value
    */
   public static void setAtom(String atom, String value) throws ParseError{
-    int index = atom.charAt(0) - 65;
+
+    int index = atom.charAt(0);
 
     if (!Character.isLetter(index))
-      throw new ParseError("Invalidd Atom: " + atom + " is not a recognized "
+      throw new ParseError("Invalid Atom: " + atom + " is not a recognized "
                            + "letter");
+
+    index -= 65;
 
     if (value.contains("true"))
       atoms[index] = true;
@@ -49,9 +52,32 @@ public class Expression {
       atoms[index] = false;
   }
 
-  public boolean evaluate() {
-    //ToDo actually evaluate the value!
-    return false;
+  public boolean evaluate(){
+    this.value = evaluate(this.root);
+    return this.value;
+  }
+
+  private boolean evaluate (Node subT){
+
+    if (subT.isLeaf())
+      return atoms[subT.symbol.charAt(0) - 65];
+
+    if (subT.symbol.equals("^")){
+      boolean left = evaluate(subT.left);
+      boolean right = evaluate(subT.right);
+
+      return left && right;
+    }
+
+    if (subT.symbol.equals("v")){
+      boolean left = evaluate(subT.left);
+      boolean right = evaluate(subT.right);
+
+      return left && right;
+    }
+
+    //The only operator left is the negation
+    return !evaluate(subT.right);
   }
 
   /**
@@ -249,6 +275,10 @@ public class Expression {
 
     throw new ParseError("Parenthesis mismatch: " + line);
   }
+
+  //=================
+  // Utility Methods
+  //=================
 
   /**
    * Essentially, a missing constructor for string. Creates a string from a

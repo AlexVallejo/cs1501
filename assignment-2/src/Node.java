@@ -36,4 +36,16 @@ public class Node {
     this.left = left;
     this.right = right;
   }
+
+  public boolean hasRight(){
+    return this.right != null;
+  }
+
+  public boolean hasLeft(){
+    return this.left != null;
+  }
+
+  public boolean isLeaf(){
+    return !hasLeft() && !hasRight();
+  }
 }
