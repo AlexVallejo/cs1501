@@ -10,22 +10,18 @@ public class Expression {
 
   public static boolean atoms[] = new boolean[26];
 
-  private boolean value;
+  public boolean value;
   private String line;
   private String rawLine;
-  private boolean evaluated;
   Node root;
 
   public Expression(String line) throws ParseError{
-    evaluated = false;
     this.rawLine = line;
 
     line = line.replaceAll(" ", "");
     this.line = line;
 
-    if (line.contains("!v") || line.contains("!^") || line.contains("v!") ||
-        line.contains("^!"))
-      throw new ParseError("Expression not fully parenthesized: " + line);
+    validate();
 
     this.root = buildTree(line);
     TreeDisplay disp = new TreeDisplay(this.rawLine);
@@ -33,7 +29,6 @@ public class Expression {
   }
 
   public Expression(String line, boolean input) throws ParseError{
-    evaluated = false;
     this.rawLine = line;
 
     line = line.replaceAll(" ", "");
@@ -130,7 +125,7 @@ public class Expression {
           node.right = normalize(node.right.right.right);
     }
 
-    //Remove a negation above an OR => v
+    //Remove a negation above an AND
     else if (node.symbol.equals("!") && node.right.symbol.equals("^")){
         node = node.right;
         node.symbol = "v";
@@ -141,7 +136,7 @@ public class Expression {
         node.left = normalize(node.left);
       }
 
-    //Remove a negation above an AND => ^
+    //Remove a negation above an OR
     else if (node.symbol.equals("!") && node.right.symbol.equals("v")){
         node = node.right;
         node.symbol = "^";
@@ -172,8 +167,8 @@ public class Expression {
         rl = new Node("^", node.left.right, node.right.left);
         rr = new Node("^", node.left.right, node.right.right);
 
-        iR = new Node("^", ll, lr);
-        iL = new Node("^", rl, rr);
+        iL = new Node("^", ll, lr);
+        iR = new Node("^", rl, rr);
 
         node.left = iL;
         node.right = iR;
@@ -187,8 +182,10 @@ public class Expression {
         node.right = subTR;
         node.left = subTL;
 
-        node.right = normalize(node.right);
-        node.left = normalize(node.left);
+        normalize(node);
+
+        //node.right = normalize(node.right);
+        //node.left = normalize(node.left);
       }
 
       else if (node.left.symbol.equals("v")){
@@ -199,8 +196,10 @@ public class Expression {
         node.right = subTR;
         node.left = subTL;
 
-        node.right = normalize(node.right);
-        node.left = normalize(node.left);
+        normalize(node);
+
+        //node.right = normalize(node.right);
+        //node.left = normalize(node.left);
       }
     }
 
@@ -225,10 +224,7 @@ public class Expression {
    * @return The original expression with it's value. EX: (A v B) = false
    */
   public String toString(){
-    if (!this.evaluated)
-      evaluate();
-
-    return this.rawLine + " = " + this.value;
+    return this.rawLine;
   }
 
   //==================================
@@ -308,6 +304,11 @@ public class Expression {
     op = line.charAt(1);
     last = line.charAt(line.length() - 1);
     endOp = line.charAt(line.length() - 2);
+
+    //Error case: {atom} ( {exp/atom}
+    if (isAtom(first) && !isOp(op))
+      throw new ParseError("Expression not fully parenthesized: " + this
+        .rawLine);
 
     //Base case: => {atom} {op} {exp}
     if (isAtom(first) && isOp(op))
@@ -417,6 +418,37 @@ public class Expression {
   //=================
   // Utility Methods
   //=================
+
+  private void validate() throws ParseError{
+    if (line.contains("!v") || line.contains("!^") || line.contains("v!") ||
+        line.contains("^!"))
+      throw new ParseError("Expression not fully parenthesized: " + this.rawLine);
+
+/*
+    char[] chars = line.toCharArray();
+
+    char prevChar, curChar, nxtChar;
+
+    for (int prev = -1, cur = 0, nxt = 1; nxt < line.length();prev++,  cur++,
+        nxt++ ){
+
+      curChar = line.charAt(cur);
+      nxtChar = line.charAt(nxt);
+
+      if (prev >= 0){
+        prevChar = line.charAt(prev);
+
+        if (isAtom(curChar) && prevChar == ')')
+          throw new ParseError("Expression not fully parenthesized: " + this
+              .rawLine);
+      }
+
+      if (isAtom(curChar) && nxtChar == '(')
+          throw new ParseError("Expression not fully parenthesized: " + this
+              .rawLine);
+    }
+*/
+  }
 
   /**
    * Essentially, a missing constructor for string. Creates a string from a

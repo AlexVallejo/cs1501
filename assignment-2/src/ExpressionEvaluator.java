@@ -68,7 +68,8 @@ public class ExpressionEvaluator {
 
         try {
           Expression exp = new Expression(line);
-          System.out.println("\n" + exp);
+          exp.evaluate();
+          System.out.println("\n" + exp + " = " + exp.value);
         }
 
         catch (ParseError pe){
