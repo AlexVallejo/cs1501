@@ -23,12 +23,16 @@ public class Expression {
     line = line.replaceAll(" ", "");
     this.line = line;
 
+    if (line.contains("!v") || line.contains("!^") || line.contains("v!") ||
+        line.contains("^!"))
+      throw new ParseError("Expression not fully parenthesized: " + line);
+
     this.root = buildTree(line);
     TreeDisplay disp = new TreeDisplay(this.rawLine);
     disp.setRoot(this.root);
   }
 
-  public Expression(String line, char disp) throws ParseError{
+  public Expression(String line, boolean input) throws ParseError{
     evaluated = false;
     this.rawLine = line;
 
@@ -100,7 +104,7 @@ public class Expression {
    * @throws ParseError if there is an error in building the copy
    */
   public Expression copy() throws ParseError{
-    return new Expression(this.rawLine, 'd');
+    return new Expression(this.rawLine, true);
   }
 
   /**

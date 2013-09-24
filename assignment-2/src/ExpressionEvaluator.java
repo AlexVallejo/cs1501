@@ -15,8 +15,7 @@ import java.util.Scanner;
 public class ExpressionEvaluator {
   public static void main(String args[]) {
 
-    ArrayList<Expression> exps = new ArrayList<Expression>();
-
+    //Verify the program was used correctly
     if (args.length != 1) {
       System.out.println("Correct Usage: java ExpressionEvaluator exp" +
           ".txt");
@@ -24,6 +23,7 @@ public class ExpressionEvaluator {
       System.exit(0);
     }
 
+    //Read all of the atoms!
     try {
       BufferedReader reader = new BufferedReader(new FileReader(args[0]));
       Scanner keyboard = new Scanner(System.in);
@@ -51,14 +51,15 @@ public class ExpressionEvaluator {
           }
         }
 
-        catch (ParseError pe){
-          System.out.println(pe);
+        catch (ParseError ex){
+          System.out.println(ex);
         }
       }
 
       printAtoms();
       System.out.println("\n");
 
+      //Process the expressions!
       do {
         line = reader.readLine();
 
@@ -67,17 +68,11 @@ public class ExpressionEvaluator {
 
         try {
           Expression exp = new Expression(line);
-          exp.displayNormalized();
-          exps.add(exp);
           System.out.println("\n" + exp);
         }
 
         catch (ParseError pe){
-          System.out.println("\n" + pe);
-
-          char input;
-
-          System.out.println();
+          System.out.println("\n" + pe + "\n");
         }
 
         char input;
@@ -88,9 +83,8 @@ public class ExpressionEvaluator {
           if (input == 'n')
             System.exit(0);
 
-        } while (input != 'y');
-
-      } while (line != null);
+        } while (input != 'y'); //input verification loop
+      } while (line != null); //while there are more expressions
 
       System.out.println("\nEnd of file reached");
       System.exit(0);
