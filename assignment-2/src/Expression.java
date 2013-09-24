@@ -14,10 +14,21 @@ public class Expression {
   private String line;
   private String rawLine;
   private boolean evaluated;
-  private boolean normalized;
   Node root;
 
   public Expression(String line) throws ParseError{
+    evaluated = false;
+    this.rawLine = line;
+
+    line = line.replaceAll(" ", "");
+    this.line = line;
+
+    this.root = buildTree(line);
+    TreeDisplay disp = new TreeDisplay(this.rawLine);
+    disp.setRoot(this.root);
+  }
+
+  public Expression(String line, char disp) throws ParseError{
     evaluated = false;
     this.rawLine = line;
 
@@ -89,7 +100,7 @@ public class Expression {
    * @throws ParseError if there is an error in building the copy
    */
   public Expression copy() throws ParseError{
-    return new Expression(this.rawLine);
+    return new Expression(this.rawLine, 'd');
   }
 
   /**
@@ -97,10 +108,12 @@ public class Expression {
    */
   public void normalize() {
     this.root = normalize(this.root);
-    normalized = true;
   }
 
   private Node normalize(Node node){
+    //TreeDisplay disp = new TreeDisplay(node.symbol);
+    //disp.setRoot(this.root);
+
     if (node.isLeaf())
       return node;
 
@@ -147,7 +160,30 @@ public class Expression {
 
     //Convert any AND above an OR to an OR and distribute inside the tree
     if (node.symbol.equals("^")){
-      if (node.right.symbol.equals("v")){
+
+      if (node.left.symbol.equals("v") && node.right.symbol.equals("v")){
+
+        node.symbol = "v";
+
+        Node ll, lr, rl, rr, iL, iR; //l -> left r-> right i -> right
+
+        ll = new Node("^", node.left.left, node.right.left);
+        lr = new Node("^", node.left.left, node.right.right);
+
+        rl = new Node("^", node.left.right, node.right.left);
+        rr = new Node("^", node.left.right, node.right.right);
+
+        iR = new Node("^", ll, lr);
+        iL = new Node("^", rl, rr);
+
+        node.left = iL;
+        node.right = iR;
+
+        /*node.right = normalize(node.right);
+        node.left = normalize(node.left);*/
+      }
+
+      else if (node.right.symbol.equals("v")){
         node.symbol = "v";
         Node subTL = new Node("^", node.left, node.right.left);
         Node subTR = new Node("^", node.left, node.right.right);
@@ -159,7 +195,7 @@ public class Expression {
         node.left = normalize(node.left);
       }
 
-      if (node.left.symbol.equals("v")){
+      else if (node.left.symbol.equals("v")){
         node.symbol = "v";
         Node subTR = new Node("^", node.left.right, node.left);
         Node subTL = new Node("^", node.left.left, node.left);
@@ -181,15 +217,11 @@ public class Expression {
    */
   public void displayNormalized() throws ParseError{
 
-    TreeDisplay disp = new TreeDisplay(this.rawLine);
-    disp.setRoot(this.root);
+    Expression copy = this.copy();
+    copy.normalize();
 
-    Expression copiedExpression = this.copy();
-    copiedExpression.normalize();
-    TreeDisplay normal = new TreeDisplay(copiedExpression.rawLine +
-                                          " normalized");
-    Node balls = copiedExpression.root;
-    normal.setRoot(copiedExpression.root);
+    TreeDisplay disp = new TreeDisplay("normalized " + copy.rawLine);
+    disp.setRoot(copy.root);
   }
 
   /**
