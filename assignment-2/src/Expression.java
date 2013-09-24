@@ -14,6 +14,7 @@ public class Expression {
   private String line;
   private String rawLine;
   private boolean evaluated;
+  private boolean normalized;
   Node root;
 
   public Expression(String line) throws ParseError{
@@ -96,6 +97,7 @@ public class Expression {
    */
   public void normalize() {
     this.root = normalize(this.root);
+    normalized = true;
   }
 
   private Node normalize(Node node){
@@ -106,19 +108,18 @@ public class Expression {
       return node;
 
     //Remove chained negations. Works for a negation as a root node!
-    if (node.symbol.equals("!"))
-      if (node.right.symbol.equals("!")){
+    if (node.symbol.equals("!") && node.right.symbol.equals("!")){
         node = normalize(node.right.right);
-      }
+        //node.left = normalize(node.left);
+    }
 
-    else if (node.right.symbol.equals("!"))
-        if (node.right.right.symbol.equals("!")){
-          node = normalize(node.right.right.right);
-        }
+    else if (node.right.symbol.equals("!") && node.right.right.symbol.equals("!")){
+          node.right = normalize(node.right.right.right);
+          //node.left = normalize(node.left);
+    }
 
-    //Remove a negation above an operator
-    else if (node.symbol.equals("!"))
-      if (node.right.symbol.equals("^")){
+    //Remove a negation above an OR => v
+    else if (node.symbol.equals("!") && node.right.symbol.equals("^")){
         node = node.right;
         node.symbol = "v";
 
@@ -128,8 +129,8 @@ public class Expression {
         node.left = normalize(node.left);
       }
 
-    else if (node.symbol.equals("!"))
-      if (node.right.symbol.equals("v")){
+    //Remove a negation above an AND => ^
+    else if (node.symbol.equals("!") && node.right.symbol.equals("v")){
         node = node.right;
         node.symbol = "^";
 
@@ -139,7 +140,12 @@ public class Expression {
         node.left = normalize(node.left);
       }
 
-    //Convert any and above an or to an or and distribute inside the tree
+    else {
+      node.right = normalize(node.right);
+      node.left = normalize(node.left);
+    }
+
+    //Convert any AND above an OR to an OR and distribute inside the tree
     if (node.symbol.equals("^")){
       if (node.right.symbol.equals("v")){
         node.symbol = "v";
@@ -182,6 +188,7 @@ public class Expression {
     copiedExpression.normalize();
     TreeDisplay normal = new TreeDisplay(copiedExpression.rawLine +
                                           " normalized");
+    Node balls = copiedExpression.root;
     normal.setRoot(copiedExpression.root);
   }
 

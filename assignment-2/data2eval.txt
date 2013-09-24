@@ -24,4 +24,4 @@ W true
 X true
 Y true
 Z true
-(A ^ (! (! (! C))))
+(B ^ ( S ^ ( A v N ) ) )
