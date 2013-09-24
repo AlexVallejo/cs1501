@@ -111,9 +111,6 @@ public class Expression {
   }
 
   private Node normalize(Node node){
-    //TreeDisplay disp = new TreeDisplay(node.symbol);
-    //disp.setRoot(this.root);
-
     if (node.isLeaf())
       return node;
 
@@ -123,12 +120,10 @@ public class Expression {
     //Remove chained negations. Works for a negation as a root node!
     if (node.symbol.equals("!") && node.right.symbol.equals("!")){
         node = normalize(node.right.right);
-        //node.left = normalize(node.left);
     }
 
     else if (node.right.symbol.equals("!") && node.right.right.symbol.equals("!")){
           node.right = normalize(node.right.right.right);
-          //node.left = normalize(node.left);
     }
 
     //Remove a negation above an OR => v
@@ -178,9 +173,6 @@ public class Expression {
 
         node.left = iL;
         node.right = iR;
-
-        /*node.right = normalize(node.right);
-        node.left = normalize(node.left);*/
       }
 
       else if (node.right.symbol.equals("v")){
