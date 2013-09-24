@@ -11,15 +11,18 @@ Input is taken in the form of a string:
 
 ###Usage:
 Display and evaluate a tree:
-  java ExpressionEvaluator exp.txt
+  
+    java ExpressionEvaluator exp.txt
 
 Display the standard and normalized trees:
-  java ExpressionDisplayer exp.txt 
+    
+    java ExpressionDisplayer exp.txt 
   
 A tree that uses the ExpressionEvaluator expects that the first 26 lines of your input file will be atoms with associated values. 
-  A true
-  B false
-  ...
+  
+    A true
+    B false
+    ...
 
 Atom's must be capitalized. You must include all 26 letters even if they are not in any expressions 
   
