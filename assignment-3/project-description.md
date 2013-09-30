@@ -102,7 +102,7 @@ public static void main(String[] args) {
 ##Input and output formats. 
 The input and output format for a board is the board dimension N followed by the N-by-N initial board, using 0 to represent the blank square. As an example,
 
-![Example output](http://alex-vallejo.com/images/cs-1501-a3-ex-output.png)
+![Example output](included-files/ex1.png)
                                                  
 Your program should work correctly for arbitrary N-by-N boards (for any 1 ≤ N < 128), even if it is too slow to solve some of them in a reasonable amount of time.
 
@@ -111,5 +111,5 @@ Submit the files Board.java and Solver.java (with the Hamming priority).  Your m
 
 Here are the contents of the priority queue just before removing each node when using the Manhattan priority function on puzzle04.txt.
 
-![Example PQ](http://alex-vallejo.com/images/cs-1501-a3-ex-pq.png)
+![Example PQ](included-files/ex2.png)
    
