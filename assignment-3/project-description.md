@@ -104,8 +104,12 @@ The input and output format for a board is the board dimension N followed by the
 
 ![Example output](http://alex-vallejo.com/images/cs-1501-a3-ex-output.png)
                                                  
-  Your program should work correctly for arbitrary N-by-N boards (for any 1 ≤ N < 128), even if it is too slow to solve some of them in a reasonable amount of time.
-Deliverables
+Your program should work correctly for arbitrary N-by-N boards (for any 1 ≤ N < 128), even if it is too slow to solve some of them in a reasonable amount of time.
+
+##Deliverables
 Submit the files Board.java and Solver.java (with the Hamming priority).  Your may not call any library functions other than those in java.lang or java.util. You must use the PQ<T> data type for the priority queue.
+
 Here are the contents of the priority queue just before removing each node when using the Manhattan priority function on puzzle04.txt.
+
+![Example PQ](http://alex-vallejo.com/images/cs-1501-a3-ex-pq.png)
    
