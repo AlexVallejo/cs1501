@@ -1,6 +1,8 @@
 Binary Decision Tree
 =========
 
+This readme is formatted in GitHub flavored markdown! View on GitHub for the best look and feel.
+
 This utility evaluates and displays a binary decision tree.
 
 Input is taken in the form of a string:
@@ -37,5 +39,3 @@ The primary data structure is a tree, with node classes that comprise the tree. 
 The normalized tree is not produced correctly under certain conditions. They are difficult to replicate, but it seems to have something to do with large trees that have chained AND's above an OR.
 
 If you discover the issue submit a pull request!
-
-This readme is formatted in GitHub flavored markdown! View on GitHub for the best look and feel.
