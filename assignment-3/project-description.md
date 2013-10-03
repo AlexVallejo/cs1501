@@ -4,6 +4,7 @@ Write a program to solve the 8-puzzle problem (and its natural generalizations) 
 
 ##The problem. 
 The 8-puzzle problem is a puzzle invented and popularized by Noyes Palmer Chapman in the 1870s. It is played on a 3-by-3 grid with 8 square blocks labeled 1 through 8 and a blank square. Your goal is to rearrange the blocks so that they are in order, using as few moves as possible. You are permitted to slide blocks horizontally or vertically into the blank square. The following shows a sequence of legal moves from an initial board (left) to the goal board (right).
+![Initial to goal](included-files/1.png)
  
 ##Best-first search. 
 Now, we describe a solution to the problem that illustrates a general artificial intelligence methodology known as the A* search algorithm. We define a search node of the game to be a board, the number of moves made to reach the board, and the previous search node. First, insert the initial search node (the initial board, 0 moves, and a null previous search node) into an PQ. Define the Node class as a private inner-class of the Solver class (see below), where Node implements the Comparable interface. Note: Node is not generic! Then, delete from the PQ the search node with the minimum priority, and insert into the PQ of all neighboring search nodes (those that can be reached in one move from the removed search node). Repeat this procedure until the search node that has been removed corresponds to a goal board. The success of this approach hinges on the choice of priority function for a search node. We consider two priority functions:
@@ -12,14 +13,21 @@ Now, we describe a solution to the problem that illustrates a general artificial
  - Manhattan priority function. The sum of the Manhattan distances (sum of the vertical and horizontal distance) from the blocks to their goal positions, plus the number of moves made so far to get to the search node.
 
 For example, the Hamming and Manhattan priorities of the initial search node below are 5 and 10, respectively.
-
+![Example Hamming and Manhattan](included-files/2.png)
  
 We make a key observation: To solve the puzzle from a given search node on the PQ, the total number of moves we need to make (including those already made) is at least its priority, using either the Hamming or Manhattan priority function. (For Hamming priority, this is true because each block that is out of place must move at least once to reach its goal position. For Manhattan priority, this is true because each block must move its Manhattan distance from its goal position. Note that we do not count the blank square when computing the Hamming or Manhattan priorities.) Consequently, when the goal board is removed, we have discovered not only a sequence of moves from the initial board to the goal board, but one that makes the fewest number of moves. (Challenge for the mathematically inclined: prove this fact.)
 
 A critical optimization. Best-first search has one annoying feature: search nodes corresponding to the same board are added to the PQ many times. To reduce unnecessary exploration of useless search nodes, when considering the neighbors of a search node, don't add a neighbor if its board is the same as the board of the previous search node.
+![Example](included-files/3.png)
    
 ##Detecting infeasible puzzles. 
 Not all initial boards can lead to the goal board such as the one below.
+
+```
+1 2 3
+4 5 6
+8 7 *
+```
                                     
 To detect such situations, use the fact that boards are divided into two equivalence classes with respect to reachability:
  1. those that lead to the goal board
