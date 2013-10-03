@@ -5,6 +5,9 @@
  * Email: amv49@pitt.edu
  * Peoplesoft: 357-8411
  */
+
+import java.util.ArrayList;
+
 public class Solver {
   public Solver(Board initial){
 
@@ -19,7 +22,7 @@ public class Solver {
   }
 
   public Iterable<Board> solution(){
-    return new Iterable<Board>();
+    return new ArrayList<Board>();
   }
 
   public static void main(String args[]){
