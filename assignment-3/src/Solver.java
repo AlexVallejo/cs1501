@@ -9,16 +9,22 @@
 import java.util.ArrayList;
 
 public class Solver {
-  public Solver(Board initial){
 
+  private Board initial;
+  private Board curBoard;
+  private int moves;
+
+  public Solver(Board initial){
+    this.initial = initial;
+    this.moves = 0;
   }
 
   public boolean isSolvable(){
-    return false;
+    return curBoard.isSolvable();
   }
 
   public int moves(){
-    return 0;
+    return moves;
   }
 
   public Iterable<Board> solution(){

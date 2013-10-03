@@ -24,7 +24,10 @@ public class Board {
 
   }
 
-  //board dimension N
+  /**
+   * The Dimension of the board.
+   * @return The dimension of the board.
+   */
   public int dimension(){
     return squares.length;
   }
