@@ -44,20 +44,41 @@ public class Board {
     for (int row = 0; row < squares.length; row++)
       for (int col = 0; col < squares[0].length; col++){
 
+        if (squares[row][col] == 0)
+          continue;
+
         if (squares[row][col] != expectedValue)
           outOfPlace += 1;
 
         expectedValue += 1;
       }
 
-    //Return outOfPlace - 1 because there will always be at least one value
-    // out of place due to the 0 in the board which represents the blank space
-    return outOfPlace - 1;
+    return outOfPlace;
   }
 
   //sum of manhattan blocks between blocks and goal
   public int manhattan(){
-    return 0;
+
+    int pos = 1;
+    int priority = 0;
+
+    for (int row = 0; row < squares.length; row++)
+      for (int col = 0; col < squares.length; col++){
+
+        if (squares[row][col] == 0 || squares[row][col] == pos)
+          continue;
+
+        int posDist = 0;
+
+        for (int rowDist = 0; rowDist < squares.length; rowDist++)
+          for (int colDist = 0; colDist < squares.length; colDist++){
+            if (squares[row][col] == pos)
+              priority += ( Math.abs(row - rowDist) + Math.abs(col - colDist) );
+            posDist++;
+          }
+      }
+
+    return priority;
   }
 
   /**
@@ -67,9 +88,13 @@ public class Board {
   public boolean isGoal(){
 
     int expectedValue = 1;
-    //todo check for edge case of the 0 in final position
+
     for (int row = 0; row < squares.length; row++)
       for (int col = 0; col < squares[0].length; col++){
+
+        if (squares[row][col] == 0 && row != squares.length && col !=
+            squares.length)
+          return false;
 
         if (squares[row][col] != expectedValue)
           return false;
