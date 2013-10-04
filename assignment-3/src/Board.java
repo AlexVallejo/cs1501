@@ -106,15 +106,16 @@ public class Board {
   }
 
   public boolean isSolvable(){
-    return false;
+    Solver solve = new Solver(squares);
+    return solve.isSolveable();
   }
 
   //does this board equal y?
-  public boolean equals(Board y){
+  public boolean equals(Board board){
 
     for (int row = 0; row < squares.length; row++)
       for (int col = 0; col < squares[0].length; col++)
-        if (squares[row][col] != y.squares[row][col])
+        if (squares[row][col] != board.squares[row][col])
           return false;
 
     return true;
