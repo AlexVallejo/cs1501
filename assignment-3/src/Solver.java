@@ -37,23 +37,18 @@ public class Solver {
 
   private class Node implements Comparable<Node>{
 
-    Node right;
-    Node left;
-    Node above;
-    Node below;
-    int value;
+    Node prev;
+    int numMoves;
+    Board board;
 
-    public Node(Node right, Node left, Node above, Node below, int value){
-      this.right = right;
-      this.left = left;
-      this.above = above;
-      this.below = below;
-
-      this.value = value;
+    public Node(Board board, int numMoves, Node prev){
+      this.board = board;
+      this.numMoves = numMoves;
+      this.prev = prev;
     }
 
     public int compareTo(Node other){
-      return this.value - other.value;
+      return this.numMoves - other.numMoves;
     }
   }
 }

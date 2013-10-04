@@ -10,13 +10,13 @@ import java.util.ArrayList;
 
 public class Board {
 
-  private int squares[][];
+  public int squares[][];
 
   //Construct a board from an NxN array of blocks
   public Board(int[][] blocks){
 
     if (blocks.length != blocks[0].length){
-      System.out.println("Sorry, the dimensions of the board must be equal.");
+      System.out.println("Sorry, the board must be square.");
       System.exit(0);
     }
 
@@ -67,7 +67,7 @@ public class Board {
   public boolean isGoal(){
 
     int expectedValue = 1;
-
+    //todo check for edge case of the 0 in final position
     for (int row = 0; row < squares.length; row++)
       for (int col = 0; col < squares[0].length; col++){
 
@@ -85,13 +85,22 @@ public class Board {
   }
 
   //does this board equal y?
-  public boolean equals(Object y){
-    return false;
+  public boolean equals(Board y){
+
+    for (int row = 0; row < squares.length; row++)
+      for (int col = 0; col < squares[0].length; col++)
+        if (squares[row][col] != y.squares[row][col])
+          return false;
+
+    return true;
   }
 
   //Place all boards onto your iterable Queue
   public Iterable<Board> neighbors(){
-    return new ArrayList<Board>();
+    Queue<Board> neighbors = new Queue<Board>();
+
+    return neighbors;
+
   }
 
   //String representations of the board (in the output format specified below)
