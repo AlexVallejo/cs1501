@@ -125,12 +125,16 @@ public class Graph {
 
 
   /**
-   * Add the edge v-w to graph.
+   * Add the edge v-w to graph only if will not for ma cycle and if the edge
+   * does not already exist.
    */
   public void addEdge(int v, int w) {
-    E++;
-    adj[v].add(w);
-    adj[w].add(v);
+
+    if (v == w || !adj[v].Contains(w)){
+      E++;
+      adj[v].add(w);
+      adj[w].add(v);
+    }
   }
 
 
