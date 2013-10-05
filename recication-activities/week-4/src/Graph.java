@@ -99,21 +99,10 @@ public class Graph {
      * Copy constructor.
      */
     public Graph(Graph G) {
-        this(G.V());
-        this.E = G.E();
-        for (int v = 0; v < G.V(); v++) {
-            // reverse so that adjacency list is in same order as original
-            Stack<Integer> reverse = new Stack<Integer>();
-            
-            for (int w : G.adj[v]) {
-                reverse.push(w);
-            }
-            
-       
-            for (int w : reverse) {
-                adj[v].add(w);
-            }        
-        }
+      this(G.V());
+
+      for (int w : G.adj[v])
+        adj[v].add[w];
     }
 
    /**
