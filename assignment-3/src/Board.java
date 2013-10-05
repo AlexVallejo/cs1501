@@ -125,6 +125,21 @@ public class Board {
   public Iterable<Board> neighbors(){
     Queue<Board> neighbors = new Queue<Board>();
 
+    int zeroRowLoc = -1;
+    int zeroColLoc = -1;
+
+    for (int row = 0; row < squares.length; row++)
+      for (int col = 0; col < squares.length; col++)
+        if (squares[row][col] == 0){
+          zeroRowLoc = row;
+          zeroColLoc = col;
+          break;
+        }
+
+    //todo check all neighbors of the zero location
+    if (squares[zeroRowLoc][zeroColLoc] != null)
+      neighbors.enqueue();
+
     return neighbors;
 
   }
@@ -132,6 +147,16 @@ public class Board {
   //String representations of the board (in the output format specified below)
   public String toString(){
     return new String();
+  }
+
+  public Board copy(){
+    int boardCopy[][] = new int[squares.length][squares.length];
+
+    for (int i = 0; i < squares.length; i++)
+      for (int j = 0; j < squares.length; j++)
+        boardCopy[i][j] = squares[i][j];
+
+    return new Board(boardCopy);
   }
 
 }
