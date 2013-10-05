@@ -90,7 +90,6 @@ public class Graph {
   public Graph(In in) {
     this(in.readInt());
 
-
     int E = in.readInt();
     for (int i = 0; i < E; i++) {
       int v = in.readInt();
