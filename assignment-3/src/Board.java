@@ -6,8 +6,6 @@
  * Peoplesoft: 357-8411
  */
 
-import java.util.ArrayList;
-
 public class Board {
 
   public int squares[][];
@@ -22,8 +20,7 @@ public class Board {
     }
 
     this.squares = blocks;
-    this.dimension = dimension;
-
+    this.dimension = squares.length;
   }
 
   /**
@@ -58,7 +55,11 @@ public class Board {
     return outOfPlace;
   }
 
-  //sum of manhattan blocks between blocks and goal
+  /**
+   * Implements the manhattan priority function for this board (AKA taxicab).
+   * @return returns the number of spaces each block must move in order to be
+   * a goal board
+   */
   public int manhattan(){
 
     int pos = 1;
@@ -94,8 +95,7 @@ public class Board {
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < squares[0].length; col++){
 
-        if (squares[row][col] == 0 && row != dimension && col !=
-            dimension)
+        if (squares[row][col] == 0 && row != dimension && col != dimension)
           return false;
 
         if (squares[row][col] != expectedValue)
@@ -124,9 +124,11 @@ public class Board {
         expectedVal++;
       }
 
-    //todo actually make a decision on the parity
+    if (boardParity % 2 == 0)
+      return true;
 
-    return true;
+    else
+      return false;
   }
 
   private int parity(int row, int col, int val){
@@ -140,9 +142,23 @@ public class Board {
     return boardParity;
   }
 
-  //todo can I use board
-  //does this board equal y?
-  public boolean equals(Board board){
+  /**
+   * Equals override for the Board class
+   * @param obj the object that is equal or not to the calling board
+   * @return true if equal, false otherwise
+   */
+  public boolean equals(Object obj){
+
+    if (obj == null)
+      return false;
+
+    if (this == null)
+      return false;
+
+    if (!(obj instanceof Board))
+      return false;
+
+    Board board = (Board)obj;
 
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < squares[0].length; col++)
@@ -168,8 +184,8 @@ public class Board {
         }
 
     //todo check all neighbors of the zero location
-    if (squares[zeroRowLoc][zeroColLoc] != null)
-      neighbors.enqueue();
+    /*if (squares[zeroRowLoc][zeroColLoc] > 0)
+      neighbors.enqueue();*/
 
     return neighbors;
 

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class Solver {
 
   private Board initial;
-  private Board curBoard;
   private int moves;
 
   public Solver(Board initial){
@@ -20,17 +19,19 @@ public class Solver {
   }
 
   public boolean isSolvable(){
-    //copy board
-    //create threads
-    //execute threads
-    //if one finishes, board solvable, else not
-    return curBoard.isSolvable();
+    return initial.isSolvable();
   }
 
   public int moves(){
     return moves;
   }
 
+  /*
+  while pq.peak is not a goal
+  iterable collection = pg.dequeue.neighbors()
+  foreach neighbor
+    pq.enqueue neighbor
+   */
   public Iterable<Board> solution(){
     return new ArrayList<Board>();
   }
