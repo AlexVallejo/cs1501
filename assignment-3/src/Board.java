@@ -6,6 +6,9 @@
  * Peoplesoft: 357-8411
  */
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 public class Board {
 
   public int squares[][];
@@ -107,6 +110,11 @@ public class Board {
     return true;
   }
 
+  /**
+   * Decide if the current board is solvable or not. Solvable boards have an
+   * even parity.
+   * @return true if solvable, false otherwise.
+   */
   public boolean isSolvable(){
 
     int boardParity = 0, expectedVal = 0;
@@ -168,9 +176,14 @@ public class Board {
     return true;
   }
 
-  //Place all boards onto your iterable Queue
+  /**
+   * Find all the possible neighbor boards of the current board. This is done
+   * by shifting the zero location to another acceptable place in the puzzle.
+   * @return an iterable object containing all possible neighbors of the
+   * current board.
+   */
   public Iterable<Board> neighbors(){
-    Queue<Board> neighbors = new Queue<Board>();
+    LinkedList<Board> neighbors = new LinkedList<>();
 
     int zeroRowLoc = -1;
     int zeroColLoc = -1;
@@ -183,12 +196,64 @@ public class Board {
           break;
         }
 
-    //todo check all neighbors of the zero location
-    /*if (squares[zeroRowLoc][zeroColLoc] > 0)
-      neighbors.enqueue();*/
+    int tmp;
+    int cpy[][] = squaresCopy();
+
+    if (zeroRowLoc + 1 < dimension){
+      cpy = squaresCopy();
+
+      tmp = cpy[zeroRowLoc + 1][zeroColLoc];
+      cpy[zeroRowLoc + 1][zeroColLoc] = 0;
+      cpy[zeroRowLoc][zeroColLoc] = tmp;
+
+      neighbors.add(new Board(cpy));
+    }
+
+    if (zeroRowLoc - 1 > 0){
+      cpy = squaresCopy();
+
+      tmp = cpy[zeroRowLoc - 1][zeroColLoc];
+      cpy[zeroRowLoc - 1][zeroColLoc] = 0;
+      cpy[zeroRowLoc][zeroColLoc] = tmp;
+
+      neighbors.add(new Board(cpy));
+    }
+
+    if (zeroColLoc + 1 < dimension){
+      cpy = squaresCopy();
+
+      tmp = cpy[zeroRowLoc][zeroColLoc + 1];
+      cpy[zeroRowLoc][zeroColLoc + 1] = 0;
+      cpy[zeroRowLoc][zeroColLoc] = tmp;
+
+      neighbors.add(new Board(cpy));
+    }
+
+    if (zeroColLoc - 1 > 0){
+      cpy = squaresCopy();
+
+      tmp = cpy[zeroRowLoc][zeroColLoc -1];
+      cpy[zeroRowLoc][zeroColLoc - 1] = 0;
+      cpy[zeroRowLoc][zeroColLoc] = tmp;
+
+      neighbors.add(new Board(cpy));
+    }
 
     return neighbors;
+  }
 
+  /**
+   * Helper function for the neighbors method, copies the underlying array
+   * representation of the puzzle pieces.
+   * @return a copy of the underlying array of puzzle pieces.
+   */
+  private int[][] squaresCopy(){
+    int[][] cpy = new int[dimension][dimension];
+
+    for (int i = 0; i < dimension; i++)
+      cpy[i] = Arrays.copyOf(squares[i], squares[i].length);
+
+    return cpy;
   }
 
   //String representations of the board (in the output format specified below)
