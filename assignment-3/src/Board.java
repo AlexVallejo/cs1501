@@ -132,6 +132,7 @@ public class Board {
         expectedVal++;
       }
 
+    //if ((boardParity + manhattan) % 2 == 0)
     if (boardParity % 2 == 0)
       return true;
 
@@ -256,9 +257,21 @@ public class Board {
     return cpy;
   }
 
-  //String representations of the board (in the output format specified below)
+  /**
+   * toString overlad for the Board class
+   * @return matrix representation for the board
+   */
   public String toString(){
-    return new String();
+    String str = new String();
+
+    for (int row = 0; row < dimension; row++){
+      for (int col = 0; col < dimension; col++){
+        str += String.format("%-5d", squares[row][col])
+      }
+      str += "\n"
+    }
+
+    return str;
   }
 
   public Board copy(){
