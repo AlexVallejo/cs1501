@@ -258,17 +258,17 @@ public class Board {
   }
 
   /**
-   * toString overlad for the Board class
+   * toString overload for the Board class
    * @return matrix representation for the board
    */
   public String toString(){
-    String str = new String();
+    String str;
 
     for (int row = 0; row < dimension; row++){
       for (int col = 0; col < dimension; col++){
         str += String.format("%-5d", squares[row][col])
       }
-      str += "\n"
+      str += "\n";
     }
 
     return str;
@@ -283,5 +283,4 @@ public class Board {
 
     return new Board(boardCopy);
   }
-
 }

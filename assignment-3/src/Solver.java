@@ -6,7 +6,8 @@
  * Peoplesoft: 357-8411
  */
 
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 public class Solver {
 
@@ -26,14 +27,33 @@ public class Solver {
     return moves;
   }
 
-  /*
-  while pq.peak is not a goal
-  iterable collection = pg.dequeue.neighbors()
-  foreach neighbor
-    pq.enqueue neighbor
-   */
   public Iterable<Board> solution(){
-    return new ArrayList<Board>();
+    LinkedList<Board> goalSequence = new LinkedList<Board>();
+    PriorityQueue<Node> pq = new PriorityQueue<>();
+
+    pq.add(new Node(initial, moves, null));
+
+    while (!pq.peek().board.isGoal()){
+
+      Node min = pq.remove();
+      this.moves = min.numMoves;
+
+      Iterable<Board> neighbors = min.board.neighbors();
+
+      for (Board board : neighbors)
+        if (!pq.contains(board))
+          pq.add(new Node(board, min.numMoves + 1, min));
+    }
+
+    Node board = pq.remove();
+
+    while (board != null){
+      goalSequence.addFirst(board.board);
+      board = board.prev;
+
+    }
+
+    return goalSequence;
   }
 
   public static void main(String args[]){
