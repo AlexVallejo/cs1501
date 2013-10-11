@@ -181,7 +181,7 @@ public class Board {
    * current board.
    */
   public Iterable<Board> neighbors(){
-    LinkedList<Board> neighbors = new LinkedList<>();
+    LinkedList<Board> neighbors = new LinkedList<Board>();
 
     int zeroRowLoc = -1;
     int zeroColLoc = -1;
