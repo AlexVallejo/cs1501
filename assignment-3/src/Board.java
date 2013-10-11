@@ -41,18 +41,18 @@ public class Board {
   public int hamming(){
 
     int outOfPlace = 0;
-    int expectedValue = 1;
+    int expectedValue = 0;
 
     for (int row = 0; row < dimension; row++)
-      for (int col = 0; col < squares[0].length; col++){
+      for (int col = 0; col < dimension; col++){
+
+        expectedValue++;
 
         if (squares[row][col] == 0)
           continue;
 
         if (squares[row][col] != expectedValue)
           outOfPlace += 1;
-
-        expectedValue += 1;
       }
 
     return outOfPlace;
