@@ -74,14 +74,10 @@ public class Board {
         if (squares[row][col] == 0 || squares[row][col] == pos)
           continue;
 
-        int posDist = 0;
-
         for (int rowDist = 0; rowDist < dimension; rowDist++)
-          for (int colDist = 0; colDist < dimension; colDist++){
+          for (int colDist = 0; colDist < dimension; colDist++)
             if (squares[row][col] == pos)
               priority += ( Math.abs(row - rowDist) + Math.abs(col - colDist) );
-            posDist++;
-          }
       }
 
     return priority;
@@ -96,7 +92,7 @@ public class Board {
     int expectedValue = 1;
 
     for (int row = 0; row < dimension; row++)
-      for (int col = 0; col < squares[0].length; col++){
+      for (int col = 0; col < dimension; col++){
 
         if (squares[row][col] == 0 && row != dimension - 1 && col !=
             dimension - 1)
@@ -195,7 +191,6 @@ public class Board {
         if (squares[row][col] == 0){
           zeroRowLoc = row;
           zeroColLoc = col;
-          break;
         }
 
     int tmp;
@@ -211,7 +206,7 @@ public class Board {
       neighbors.add(new Board(cpy));
     }
 
-    if (zeroRowLoc - 1 > 0){
+    if (zeroRowLoc - 1 >= 0){
       cpy = squaresCopy();
 
       tmp = cpy[zeroRowLoc - 1][zeroColLoc];
@@ -231,7 +226,7 @@ public class Board {
       neighbors.add(new Board(cpy));
     }
 
-    if (zeroColLoc - 1 > 0){
+    if (zeroColLoc - 1 >= 0){
       cpy = squaresCopy();
 
       tmp = cpy[zeroRowLoc][zeroColLoc -1];

@@ -21,19 +21,18 @@ public class Solver {
     this.moves = 0;
 
     goalSequence = new LinkedList<Board>();
-    pq = new PriorityQueue<>();
+    pq = new PriorityQueue<Node>();
 
     pq.add(new Node(initial, moves, null));
 
     while (!pq.peek().board.isGoal()){
 
-      Node min = pq.remove();
+      Node min = pq.poll();
       this.moves = min.numMoves;
 
-      System.out.println(min.board);
+      /*System.out.println(min.board);
       System.out.println("hamming => " + min.board.hamming());
-      System.out.println("moves   => " + min.numMoves );
-      System.out.println();
+      System.out.println("moves   => " + min.numMoves );*/
 
       Iterable<Board> neighbors = min.board.neighbors();
 
