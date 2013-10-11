@@ -94,7 +94,29 @@ public class Solver {
     }
 
     public int compareTo(Node other){
-      return this.numMoves - other.numMoves;
+      return (this.board.manhattan() + this.numMoves) - (other.board.manhattan()
+          + other.numMoves);
+    }
+
+    public boolean equals(Object obj){
+      if (obj == null)
+        return false;
+
+      if (this == null)
+        return false;
+
+      if (!(obj instanceof Node))
+        return false;
+
+      Node other = (Node)obj;
+
+      if (this.numMoves != other.numMoves)
+        return false;
+
+      if (!this.board.equals(other.board))
+        return false;
+
+      return true;
     }
   }
 }
