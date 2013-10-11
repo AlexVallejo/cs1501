@@ -32,7 +32,8 @@ public class Solver {
 
       System.out.println(min.board);
       System.out.println("hamming => " + min.board.hamming());
-      System.out.println("moves   => " + min.numMoves + "\n");
+      System.out.println("moves   => " + min.numMoves );
+      System.out.println();
 
       Iterable<Board> neighbors = min.board.neighbors();
 
@@ -40,6 +41,8 @@ public class Solver {
         if (!pq.contains(board))
           pq.add(new Node(board, min.numMoves + 1, min));
     }
+
+    this.moves++;
 
     Node board = pq.remove();
 
@@ -87,7 +90,7 @@ public class Solver {
       System.out.println("Minimum number of moves = " + solver.moves());
 
       for (Board board : solver.solution())
-        System.out.println(board);
+        System.out.println(board + "\n");
     }
   }
 

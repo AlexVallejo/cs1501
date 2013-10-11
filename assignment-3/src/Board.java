@@ -98,10 +98,11 @@ public class Board {
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < squares[0].length; col++){
 
-        if (squares[row][col] == 0 && row != dimension && col != dimension)
+        if (squares[row][col] == 0 && row != dimension - 1 && col !=
+            dimension - 1)
           return false;
 
-        if (squares[row][col] != expectedValue)
+        if (squares[row][col] != 0 && squares[row][col] != expectedValue)
           return false;
 
         expectedValue += 1;
