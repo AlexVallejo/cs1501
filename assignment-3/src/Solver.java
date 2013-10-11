@@ -13,23 +13,15 @@ public class Solver {
 
   private Board initial;
   private int moves;
+  private LinkedList<Board> goalSequence;
+  private PriorityQueue<Node> pq;
 
   public Solver(Board initial){
     this.initial = initial;
     this.moves = 0;
-  }
 
-  public boolean isSolvable(){
-    return initial.isSolvable();
-  }
-
-  public int moves(){
-    return moves;
-  }
-
-  public Iterable<Board> solution(){
-    LinkedList<Board> goalSequence = new LinkedList<Board>();
-    PriorityQueue<Node> pq = new PriorityQueue<>();
+    goalSequence = new LinkedList<Board>();
+    pq = new PriorityQueue<>();
 
     pq.add(new Node(initial, moves, null));
 
@@ -37,6 +29,10 @@ public class Solver {
 
       Node min = pq.remove();
       this.moves = min.numMoves;
+
+      System.out.println(min.board);
+      System.out.println("hamming => " + min.board.hamming());
+      System.out.println("moves   => " + min.numMoves + "\n");
 
       Iterable<Board> neighbors = min.board.neighbors();
 
@@ -50,13 +46,27 @@ public class Solver {
     while (board != null){
       goalSequence.addFirst(board.board);
       board = board.prev;
-
     }
+  }
 
+  public boolean isSolvable(){
+    return initial.isSolvable();
+  }
+
+  public int moves(){
+    return moves;
+  }
+
+  public Iterable<Board> solution(){
     return goalSequence;
   }
 
   public static void main(String args[]){
+
+    if (args.length < 1 || args.length > 1){
+      System.out.println("Usage: java Solver puzzles.txt");
+      System.exit(0);
+    }
 
     // create initial board from file
     In in = new In(args[0]);
@@ -94,7 +104,7 @@ public class Solver {
     }
 
     public int compareTo(Node other){
-      return (this.board.manhattan() + this.numMoves) - (other.board.manhattan()
+      return (this.board.hamming() + this.numMoves) - (other.board.hamming()
           + other.numMoves);
     }
 

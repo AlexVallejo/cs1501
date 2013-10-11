@@ -262,15 +262,16 @@ public class Board {
    * @return matrix representation for the board
    */
   public String toString(){
-    String str;
+    String str = new String();
 
     for (int row = 0; row < dimension; row++){
       for (int col = 0; col < dimension; col++){
-        str += String.format("%-5d", squares[row][col])
+        str += String.format("%-5d", squares[row][col]);
       }
       str += "\n";
     }
 
+    str = str.substring(0, str.length() - 2);
     return str;
   }
 
