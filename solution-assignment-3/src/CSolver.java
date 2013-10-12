@@ -1,42 +1,42 @@
 import java.util.*;
 
 public class CSolver {
-  private final MinPQ<SearchNode> pqOriginal;
-  private final MinPQ<SearchNode> pqTwin;
+  private final MinPQ<Node> pqOriginal;
+  private final MinPQ<Node> pqTwin;
   private final Stack<CBoard> shortestCBoardSequence;
   private int totalMoves = 0;
   private int shortestNumOfMove = 0;
-  private boolean isSolve = false;
+  private boolean solved = false;
 
   public CSolver(CBoard initial)            // find a solution to the initial CBoard (using the A* algorithm)
   {
     shortestCBoardSequence = new Stack<CBoard>();
-    pqOriginal = new MinPQ<SearchNode>();
-    pqTwin = new MinPQ<SearchNode>();
-    pqOriginal.insert(new SearchNode(totalMoves, initial, null));
-    pqTwin.insert(new SearchNode(totalMoves, initial.twin(), null));
+    pqOriginal = new MinPQ<Node>();
+    pqTwin = new MinPQ<Node>();
+    pqOriginal.insert(new Node(totalMoves, initial, null));
+    pqTwin.insert(new Node(totalMoves, initial.twin(), null));
 
     Queue<CBoard> neighborCBoards = new Queue<CBoard>();
     CBoard previousCBoard = initial;
-    SearchNode originalNode;
-    SearchNode twinNode;
+    Node originalNode;
+    Node twinNode;
 
     outer:
     while (!pqOriginal.isEmpty() && !pqTwin.isEmpty()) {
       originalNode = pqOriginal.delMin();
       neighborCBoards = (Queue<CBoard>) originalNode.CBoard.neighbors();
-      if (originalNode.previousNode != null) {
-        previousCBoard = originalNode.previousNode.CBoard;
+      if (originalNode.prev != null) {
+        previousCBoard = originalNode.prev.CBoard;
       }
       for (CBoard neighborCBoard : neighborCBoards) {
         if (!previousCBoard.equals((CBoard) neighborCBoard)) {
-          totalMoves = originalNode.numOfMoves + 1;
-          pqOriginal.insert(new SearchNode(totalMoves, neighborCBoard, originalNode));
+          totalMoves = originalNode.numMoves + 1;
+          pqOriginal.insert(new Node(totalMoves, neighborCBoard, originalNode));
         }
       }
 
       if (originalNode.CBoard.isGoal()) {
-        isSolve = true;
+        solved = true;
         shortestQueue(originalNode);
         shortestCBoardSequence.push(initial);
         break outer;
@@ -44,28 +44,28 @@ public class CSolver {
 
       twinNode = pqTwin.delMin();
       neighborCBoards = (Queue<CBoard>) twinNode.CBoard.neighbors();
-      if (twinNode.previousNode != null) {
-        previousCBoard = twinNode.previousNode.CBoard;
+      if (twinNode.prev != null) {
+        previousCBoard = twinNode.prev.CBoard;
       }
       for (CBoard neighborCBoard : neighborCBoards) {
         if (!previousCBoard.equals((CBoard) neighborCBoard)) {
-          pqTwin.insert(new SearchNode(totalMoves, neighborCBoard, twinNode));
+          pqTwin.insert(new Node(totalMoves, neighborCBoard, twinNode));
         }
       }
       if (twinNode.CBoard.isGoal()) {
         shortestNumOfMove = -1;
-        isSolve = false;
+        solved = false;
         break outer;
       }
 
     }
   }
 
-  private void shortestQueue(SearchNode original) {
+  private void shortestQueue(Node original) {
 
-    while (original.previousNode != null) {
+    while (original.prev != null) {
       shortestCBoardSequence.push(original.CBoard);
-      original = original.previousNode;
+      original = original.prev;
       shortestNumOfMove++;
 
     }
@@ -73,7 +73,7 @@ public class CSolver {
 
   public boolean isSolvable()             // is the initial CBoard solvable?
   {
-    return isSolve;
+    return solved;
   }
 
   public int moves()                      // min number of moves to solve initial CBoard; -1 if no solution
@@ -89,22 +89,22 @@ public class CSolver {
       return null;
   }
 
-  private class SearchNode implements Comparable<SearchNode> {
-    private int numOfMoves;
+  private class Node implements Comparable<Node> {
+    private int numMoves;
     private CBoard CBoard;
-    private SearchNode previousNode;
+    private Node prev;
 
-    public SearchNode(int numOfMoves, CBoard CBoard, SearchNode previousNode) {
-      this.numOfMoves = numOfMoves;
+    public Node(int numMoves, CBoard CBoard, Node prev) {
+      this.numMoves = numMoves;
       this.CBoard = CBoard;
-      this.previousNode = previousNode;
+      this.prev = prev;
 
     }
 
-    public int compareTo(SearchNode that) {
-      if (this.CBoard.manhattan() + this.numOfMoves > that.CBoard.manhattan() + that.numOfMoves)
+    public int compareTo(Node that) {
+      if (this.CBoard.manhattan() + this.numMoves > that.CBoard.manhattan() + that.numMoves)
         return 1;
-      else if (this.CBoard.manhattan() + this.numOfMoves < that.CBoard.manhattan() + that.numOfMoves)
+      else if (this.CBoard.manhattan() + this.numMoves < that.CBoard.manhattan() + that.numMoves)
         return -1;
       else return 0;
     }

@@ -5,10 +5,6 @@ public class CBoard {
   private final int dimension;
   private final int[][] blocks;
 
-  private int hammingDistance = 0;
-  private int manhattanDistanceSum = 0;
-
-
   public CBoard(int[][] blocks)           // construct a CBoard from an N-by-N
   // array of blocks
   // (where blocks[i][j] = block in row i, column j)
@@ -61,7 +57,6 @@ public class CBoard {
   //fixme replaced with my code
   public int manhattan()                 // sum of Manhattan distances between blocks and goal
   {
-
     int priority = 0;
 
     for (int row = 0; row < dimension; row++)

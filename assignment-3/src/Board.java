@@ -11,19 +11,19 @@ import java.util.LinkedList;
 
 public class Board {
 
-  public int squares[][];
+  public int blocks[][];
   private int dimension;
 
-  //Construct a board from an NxN array of squares
-  public Board(int[][] squares){
+  //Construct a board from an NxN array of blocks
+  public Board(int[][] blocks){
 
-    if (squares.length != squares[0].length){
+    if (blocks.length != blocks[0].length){
       System.out.println("Sorry, the board must be square.");
       System.exit(0);
     }
 
-    this.squares = squares;
-    this.dimension = squares.length;
+    this.blocks = blocks;
+    this.dimension = blocks.length;
   }
 
   /**
@@ -36,7 +36,7 @@ public class Board {
 
   /**
    * Implements the hamming priority function for this board.
-   * @return the number of squares out of place
+   * @return the number of blocks out of place
    */
   public int hamming(){
 
@@ -48,10 +48,10 @@ public class Board {
 
         expectedValue++;
 
-        if (squares[row][col] == 0)
+        if (blocks[row][col] == 0)
           continue;
 
-        if (squares[row][col] != expectedValue)
+        if (blocks[row][col] != expectedValue)
           outOfPlace += 1;
       }
 
@@ -64,20 +64,20 @@ public class Board {
    * a goal board
    */
   public int manhattan(){
-
-    int pos = 1;
     int priority = 0;
 
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < dimension; col++){
 
-        if (squares[row][col] == 0 || squares[row][col] == pos)
-          continue;
+        int val = blocks[row][col];
 
-        for (int rowDist = 0; rowDist < dimension; rowDist++)
-          for (int colDist = 0; colDist < dimension; colDist++)
-            if (squares[row][col] == pos)
-              priority += ( Math.abs(row - rowDist) + Math.abs(col - colDist) );
+        if (val != 0){
+          int expectedRowVal = (val - 1) / dimension;
+          int expectedColVal = (val - 1) % dimension;
+
+          priority += Math.abs(row - expectedRowVal) + Math.abs(col -
+              expectedColVal);
+        }
       }
 
     return priority;
@@ -94,11 +94,11 @@ public class Board {
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < dimension; col++){
 
-        if (squares[row][col] == 0 && row != dimension - 1 && col !=
+        if (blocks[row][col] == 0 && row != dimension - 1 && col !=
             dimension - 1)
           return false;
 
-        if (squares[row][col] != 0 && squares[row][col] != expectedValue)
+        if (blocks[row][col] != 0 && blocks[row][col] != expectedValue)
           return false;
 
         expectedValue += 1;
@@ -119,12 +119,12 @@ public class Board {
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < dimension; col++){
 
-        if (squares[row][col] == 0)
+        if (blocks[row][col] == 0)
           if (row != dimension && col != dimension)
             boardParity += parity(row, col, dimension * dimension);
 
-        if (expectedVal != squares[col][row])
-          boardParity += parity(row, col, squares[row][col]);
+        if (expectedVal != blocks[col][row])
+          boardParity += parity(row, col, blocks[row][col]);
 
         expectedVal++;
       }
@@ -142,7 +142,7 @@ public class Board {
 
     for (row = row; row < dimension; row++)
       for (col = col; col < dimension; col++)
-        if (val <= squares[row][col] && squares[row][col] != 0)
+        if (val <= blocks[row][col] && blocks[row][col] != 0)
           boardParity++;
 
     return boardParity;
@@ -167,8 +167,8 @@ public class Board {
     Board board = (Board)obj;
 
     for (int row = 0; row < dimension; row++)
-      for (int col = 0; col < squares[0].length; col++)
-        if (squares[row][col] != board.squares[row][col])
+      for (int col = 0; col < blocks[0].length; col++)
+        if (blocks[row][col] != board.blocks[row][col])
           return false;
 
     return true;
@@ -188,70 +188,56 @@ public class Board {
 
     for (int row = 0; row < dimension; row++)
       for (int col = 0; col < dimension; col++)
-        if (squares[row][col] == 0){
+        if (blocks[row][col] == 0){
           zeroRowLoc = row;
           zeroColLoc = col;
         }
 
     if (zeroRowLoc + 1 < dimension){
-      int tmp = squares[zeroRowLoc + 1][zeroColLoc];
-      squares[zeroRowLoc + 1][zeroColLoc] = 0;
-      squares[zeroRowLoc][zeroColLoc] = tmp;
+      int tmp = blocks[zeroRowLoc + 1][zeroColLoc];
+      blocks[zeroRowLoc + 1][zeroColLoc] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      neighbors.enqueue(new Board(squares));
+      neighbors.enqueue(new Board(blocks));
 
-      squares[zeroRowLoc + 1][zeroColLoc] = tmp;
-      squares[zeroRowLoc][zeroColLoc] = 0;
+      blocks[zeroRowLoc + 1][zeroColLoc] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroRowLoc - 1 >= 0){
-      int tmp = squares[zeroRowLoc - 1][zeroColLoc];
-      squares[zeroRowLoc - 1][zeroColLoc] = 0;
-      squares[zeroRowLoc][zeroColLoc] = tmp;
+      int tmp = blocks[zeroRowLoc - 1][zeroColLoc];
+      blocks[zeroRowLoc - 1][zeroColLoc] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      neighbors.enqueue(new Board(squares));
+      neighbors.enqueue(new Board(blocks));
 
-      squares[zeroRowLoc - 1][zeroColLoc] = tmp;
-      squares[zeroRowLoc][zeroColLoc] = 0;
+      blocks[zeroRowLoc - 1][zeroColLoc] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc + 1 < dimension){
-      int tmp = squares[zeroRowLoc][zeroColLoc + 1];
-      squares[zeroRowLoc][zeroColLoc + 1] = 0;
-      squares[zeroRowLoc][zeroColLoc] = tmp;
+      int tmp = blocks[zeroRowLoc][zeroColLoc + 1];
+      blocks[zeroRowLoc][zeroColLoc + 1] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      neighbors.enqueue(new Board(squares));
+      neighbors.enqueue(new Board(blocks));
 
-      squares[zeroRowLoc][zeroColLoc + 1] = tmp;
-      squares[zeroRowLoc][zeroColLoc] = 0;
+      blocks[zeroRowLoc][zeroColLoc + 1] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc - 1 >= 0){
-      int tmp = squares[zeroRowLoc][zeroColLoc - 1];
-      squares[zeroRowLoc][zeroColLoc - 1] = 0;
-      squares[zeroRowLoc][zeroColLoc] = tmp;
+      int tmp = blocks[zeroRowLoc][zeroColLoc - 1];
+      blocks[zeroRowLoc][zeroColLoc - 1] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      neighbors.enqueue(new Board(squares));
+      neighbors.enqueue(new Board(blocks));
 
-      squares[zeroRowLoc][zeroColLoc - 1] = tmp;
-      squares[zeroRowLoc][zeroColLoc] = 0;
+      blocks[zeroRowLoc][zeroColLoc - 1] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     return neighbors;
-  }
-
-  /**
-   * Helper function for the neighbors method, copies the underlying array
-   * representation of the puzzle pieces.
-   * @return a copy of the underlying array of puzzle pieces.
-   */
-  private int[][] squaresCopy(){
-    int[][] cpy = new int[dimension][dimension];
-
-    for (int i = 0; i < dimension; i++)
-      cpy[i] = Arrays.copyOf(squares[i], squares[i].length);
-
-    return cpy;
   }
 
   /**
@@ -263,7 +249,7 @@ public class Board {
 
     for (int row = 0; row < dimension; row++){
       for (int col = 0; col < dimension; col++){
-        str += String.format("%-5d", squares[row][col]);
+        str += String.format("%-5d", blocks[row][col]);
       }
       str += "\n";
     }
@@ -276,8 +262,7 @@ public class Board {
     int boardCopy[][] = new int[dimension][dimension];
 
     for (int i = 0; i < dimension; i++)
-      for (int j = 0; j < dimension; j++)
-        boardCopy[i][j] = squares[i][j];
+      boardCopy[i] = Arrays.copyOf(blocks[i], blocks[i].length);
 
     return new Board(boardCopy);
   }
