@@ -1,63 +1,63 @@
 import java.util.*;
 
 public class Solver {
-  private final PriorityQueue<mNode> pq;
-  private final PriorityQueue<mNode> clonepq;
-  LinkedList<Board> goalSequence;
+  private PriorityQueue<mNode> pq;
+  private PriorityQueue<mNode> clonepq;
+  private LinkedList<Board> goalSequence;
   private int totalMoves = 0;
   private int minMoves = 0;
   private boolean solvable = false;
+
+  int moves = 0;
+
 
   public Solver(Board initial)            // find a solution to the initial Board (using the A* algorithm)
   {
     goalSequence = new LinkedList<Board>();
     pq = new PriorityQueue<mNode>();
     clonepq = new PriorityQueue<mNode>();
+
     pq.add(new mNode(initial,totalMoves,  null));
     clonepq.add(new mNode(initial.cloneAndSwap(), totalMoves,  null));
 
-    Queue<Board> neighborCBoards = new Queue<Board>();
-    Board previousBoard = initial;
-    mNode originalMNode;
-    mNode twinMNode;
+    Board prevBoard = initial;
 
-    outer:
     while (!pq.isEmpty() && !clonepq.isEmpty()) {
-      originalMNode = pq.remove();
-      neighborCBoards = (Queue<Board>) originalMNode.Board.neighbors();
+      mNode min = pq.remove();
+      Iterable<Board> neighbors = min.Board.neighbors();
 
-      if (originalMNode.prev != null) {
-        previousBoard = originalMNode.prev.Board;
-      }
+      if (min.prev != null)
+        prevBoard = min.prev.Board;
 
-      for (Board neighborBoard : neighborCBoards) {
-        if (!previousBoard.equals((Board) neighborBoard)) {
-          totalMoves = originalMNode.numMoves + 1;
-          pq.add(new mNode(neighborBoard, totalMoves, originalMNode));
+      for (Board board : neighbors) {
+        if (!prevBoard.equals(board)) { //fixme not adding to pq
+        pq.add(new mNode(board, min.numMoves + 1, min));
         }
       }
 
-      if (originalMNode.Board.isGoal()) {
+      if (min.Board.isGoal()){
+        this.moves = min.numMoves;
         solvable = true;
-        goalSequence(originalMNode);
-        goalSequence.push(initial);
-        break outer;
+        goalSequence(min);
+        break;
       }
 
-      twinMNode = clonepq.remove();
-      neighborCBoards = (Queue<Board>) twinMNode.Board.neighbors();
-      if (twinMNode.prev != null) {
-        previousBoard = twinMNode.prev.Board;
-      }
-      for (Board neighborBoard : neighborCBoards) {
-        if (!previousBoard.equals((Board) neighborBoard)) {
-          clonepq.add(new mNode(neighborBoard, totalMoves, twinMNode));
-        }
-      }
-      if (twinMNode.Board.isGoal()) {
-        minMoves = -1;
+      mNode cloneMin = clonepq.remove();
+      Iterable<Board> cloneNeighbors = cloneMin.Board.neighbors();
+
+      if (cloneMin.prev == null)
+        prevBoard = cloneMin.Board;
+      else
+        prevBoard = cloneMin.prev.Board;
+
+      for (Board board : cloneNeighbors)
+        if (!prevBoard.equals(board))
+        clonepq.add(new mNode(board, cloneMin.numMoves + 1, cloneMin));
+
+      if (cloneMin.Board.isGoal()){
         solvable = false;
-        break outer;
+        this.moves = -1;
+        break;
       }
     }
   }
