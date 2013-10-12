@@ -1,9 +1,9 @@
 /*************************************************************************
  *  Compilation:  javac Checker.java
  *  Execution:    java Checker filename1.txt filename2.txt ...
- *  Dependencies: CBoard.java Solver.java In.java
+ *  Dependencies: Board.java Solver.java In.java
  *
- *  This program creates an initial CBoard from each filename specified
+ *  This program creates an initial Board from each filename specified
  *  on the command line and finds the minimum number of moves to
  *  reach the goal state.
  *
@@ -42,7 +42,7 @@ public class Checker {
     // for each command-line argument
     for (String filename : args) {
 
-      // read in the CBoard specified in the filename
+      // read in the Board specified in the filename
       in = new Scanner(new File(filename));
       int N = in.nextInt();
       int[][] tiles = new int[N][N];
@@ -53,8 +53,8 @@ public class Checker {
       }
 
       // solve the slider puzzle
-      CBoard initial = new CBoard(tiles);
-      CSolver solver = new CSolver(initial);
+      Board initial = new Board(tiles);
+      Solver solver = new Solver(initial);
       System.out.println(filename + ": " + solver.moves());
     }
 

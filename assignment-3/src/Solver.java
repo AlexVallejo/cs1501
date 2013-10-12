@@ -7,60 +7,89 @@
  */
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.Stack;
 
 public class Solver {
 
-  private Board initial;
-  private int moves;
-  private LinkedList<Board> goalSequence;
-  private PriorityQueue<Node> pq;
+  private final MinPQ<Node> pqOriginal;
+  private final MinPQ<Node> pqTwin;
+  private final Stack<Board> shortestBoardSequence;
+  private int totalMoves = 0;
+  private int shortestNumOfMove = 0;
+  private boolean solved = false;
 
-  public Solver(Board initial){
-    this.initial = initial;
-    this.moves = 0;
+  public Solver(Board initial)            // find a solution to the initial Board (using the A* algorithm)
+  {
+    shortestBoardSequence = new Stack<Board>();
+    pqOriginal = new MinPQ<Node>();
+    pqTwin = new MinPQ<Node>();
+    pqOriginal.insert(new Node(initial, totalMoves, null));
+    pqTwin.insert(new Node(initial.cloneAndSwap(), totalMoves,  null));
 
-    goalSequence = new LinkedList<Board>();
-    pq = new PriorityQueue<Node>();
+    Queue<Board> neighborCBoards = new Queue<Board>();
+    Board previousBoard = initial;
+    Node originalNode;
+    Node twinNode;
 
-    pq.add(new Node(initial, moves, null));
+    outer:
+    while (!pqOriginal.isEmpty() && !pqTwin.isEmpty()) {
+      originalNode = pqOriginal.delMin();
+      neighborCBoards = (Queue<Board>) originalNode.board.neighbors();
 
-    while (!pq.peek().board.isGoal()){
+      if (originalNode.prev != null) {
+        previousBoard = originalNode.prev.board;
+      }
 
-      Node min = pq.poll();
-      this.moves = min.numMoves;
+      for (Board neighborBoard : neighborCBoards) {
+        if (!previousBoard.equals((Board) neighborBoard)) {
+          totalMoves = originalNode.numMoves + 1;
+          pqOriginal.insert(new Node(neighborBoard, totalMoves, originalNode));
+        }
+      }
 
-      /*System.out.println(min.board);
-      System.out.println("hamming => " + min.board.hamming());
-      System.out.println("moves   => " + min.numMoves );*/
+      if (originalNode.board.isGoal()) {
+        solved = true;
+        goalSequence(originalNode);
+        shortestBoardSequence.push(initial);
+        break outer;
+      }
 
-      Iterable<Board> neighbors = min.board.neighbors();
-
-      for (Board board : neighbors)
-        if (!pq.contains(board))
-          pq.add(new Node(board, min.numMoves + 1, min));
+      twinNode = pqTwin.delMin();
+      neighborCBoards = (Queue<Board>) twinNode.board.neighbors();
+      if (twinNode.prev != null) {
+        previousBoard = twinNode.prev.board;
+      }
+      for (Board neighborBoard : neighborCBoards) {
+        if (!previousBoard.equals((Board) neighborBoard)) {
+          pqTwin.insert(new Node(neighborBoard, totalMoves, twinNode));
+        }
+      }
+      if (twinNode.board.isGoal()) {
+        shortestNumOfMove = -1;
+        solved = false;
+        break outer;
+      }
     }
+  }
 
-    this.moves++;
-
-    Node board = pq.remove();
-
-    while (board != null){
-      goalSequence.addFirst(board.board);
-      board = board.prev;
+  private void goalSequence(Node step){
+    while (step != null){
+      shortestBoardSequence.push(step.board);
+      step = step.prev;
+      shortestNumOfMove++;
     }
   }
 
   public boolean isSolvable(){
-    return initial.isSolvable();
+    return solved;
   }
 
   public int moves(){
-    return moves;
+    return totalMoves;
   }
 
   public Iterable<Board> solution(){
-    return goalSequence;
+    return shortestBoardSequence;
   }
 
   public static void main(String args[]){
@@ -105,30 +134,11 @@ public class Solver {
       this.prev = prev;
     }
 
+    public Node(){ }
+
     public int compareTo(Node other){
       return (this.board.hamming() + this.numMoves) - (other.board.hamming()
           + other.numMoves);
-    }
-
-    public boolean equals(Object obj){
-      if (obj == null)
-        return false;
-
-      if (this == null)
-        return false;
-
-      if (!(obj instanceof Node))
-        return false;
-
-      Node other = (Node)obj;
-
-      if (this.numMoves != other.numMoves)
-        return false;
-
-      if (!this.board.equals(other.board))
-        return false;
-
-      return true;
     }
   }
 }
