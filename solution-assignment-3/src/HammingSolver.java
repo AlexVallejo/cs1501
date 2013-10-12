@@ -1,12 +1,12 @@
 import java.util.*;
 
-public class Solver implements nPuzzleSolver {
+public class HammingSolver implements nPuzzleSolver {
 
   private LinkedList<Board> goalSequence;
   private boolean solvable = false;
   int moves = 0;
 
-  public Solver(Board initial){
+  public HammingSolver(Board initial){
     goalSequence = new LinkedList<Board>();
     PriorityQueue<Node> pq = new PriorityQueue<Node>();
     PriorityQueue<Node> clonepq = new PriorityQueue<Node>();
@@ -25,7 +25,7 @@ public class Solver implements nPuzzleSolver {
 
       for (Board board : neighbors) {
         if (!prevBoard.equals(board)) {
-        pq.add(new Node(board, min.numMoves + 1, min));
+          pq.add(new Node(board, min.numMoves + 1, min));
         }
       }
 
@@ -46,7 +46,7 @@ public class Solver implements nPuzzleSolver {
 
       for (Board board : cloneNeighbors)
         if (!prevBoard.equals(board))
-        clonepq.add(new Node(board, min.numMoves + 1, min));
+          clonepq.add(new Node(board, min.numMoves + 1, min));
 
       if (min.board.isGoal()){
         solvable = false;
@@ -93,11 +93,11 @@ public class Solver implements nPuzzleSolver {
     }
 
     public int compareTo(Node that) {
-      if (this.board.manhattan() + this.numMoves > that.board.manhattan() +
+      if (this.board.hamming() + this.numMoves > that.board.hamming() +
           that.numMoves)
         return 1;
 
-      else if (this.board.manhattan() + this.numMoves < that.board.manhattan()
+      else if (this.board.hamming() + this.numMoves < that.board.hamming()
           + that.numMoves)
         return -1;
 
