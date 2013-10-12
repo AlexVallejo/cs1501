@@ -104,7 +104,7 @@ public class CSolver {
     public int compareTo(SearchNode that) {
       if (this.CBoard.manhattan() + this.numOfMoves > that.CBoard.manhattan() + that.numOfMoves)
         return 1;
-      else if (this.CBoard.hamming() + this.numOfMoves < that.CBoard.hamming() + that.numOfMoves)
+      else if (this.CBoard.manhattan() + this.numOfMoves < that.CBoard.manhattan() + that.numOfMoves)
         return -1;
       else return 0;
     }

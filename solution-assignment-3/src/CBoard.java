@@ -2,7 +2,7 @@ import java.util.*;
 
 public class CBoard {
 
-  private final int dimen;
+  private final int dimension;
   private final int[][] blocks;
 
   private int hammingDistance = 0;
@@ -13,57 +13,95 @@ public class CBoard {
   // array of blocks
   // (where blocks[i][j] = block in row i, column j)
   {
-    this.dimen = blocks.length;
-    this.blocks = new int[dimen][dimen];
+    this.dimension = blocks.length;
+    this.blocks = new int[dimension][dimension];
 
-    for (int i = 0; i < dimen; ++i) {
+    for (int i = 0; i < dimension; ++i) {
       System.arraycopy(blocks[i], 0, this.blocks[i], 0, blocks[i].length);
       //Arrays.copyOf(blocks[i], 2);
     }
   }
 
-  public int dimen()                 // CBoard dimen N
+  public int dimension()                 // CBoard dimension N
   {
-    return dimen;
+    return dimension;
   }
 
+  //fixme replaced with my code
   public int hamming()                   // number of blocks out of place
   {
-    hammingDistance = 0;
-    for (int i = 0; i < dimen; ++i) {
-      for (int j = 0; j < dimen; ++j) {
-        if ((blocks[i][j] != 0) && !(blocks[i][j] == (dimen * i) + (j + 1)))
-          hammingDistance++;
+    int outOfPlace = 0;
+    int expectedValue = 0;
+
+    for (int row = 0; row < dimension; row++)
+      for (int col = 0; col < dimension; col++){
+
+        expectedValue++;
+
+        if (blocks[row][col] == 0)
+          continue;
+
+        if (blocks[row][col] != expectedValue)
+          outOfPlace += 1;
       }
-    }
-    //System.out.println (hammingDistance);
-    return hammingDistance;
+
+    return outOfPlace;
+
+    /*hammingDistance = 0;
+
+    for (int row = 0; row < dimension; ++row)
+      for (int col = 0; col < dimension; ++col)
+        if ((blocks[row][col] != 0) && blocks[row][col] != ((dimension * row) +
+        (col + 1))
+          hammingDistance++;
+
+    return hammingDistance;*/
   }
 
+  //fixme replaced with my code
   public int manhattan()                 // sum of Manhattan distances between blocks and goal
   {
-    manhattanDistanceSum = 0;
-    for (int x = 0; x < dimen; x++) // x-dimen, traversing rows (i)
-      for (int y = 0; y < dimen; y++) { // y-dimen, traversing cols (j)
+
+    int priority = 0;
+
+    for (int row = 0; row < dimension; row++)
+      for (int col = 0; col < dimension; col++){
+
+        int val = blocks[row][col];
+
+        if (val != 0){
+          int expectedRowVal = (val - 1) / dimension;
+          int expectedColVal = (val - 2) % dimension;
+
+          priority += Math.abs(row - expectedRowVal) + Math.abs(col -
+              expectedColVal);
+        }
+      }
+
+    return priority;
+
+    /*manhattanDistanceSum = 0;
+    for (int x = 0; x < dimension; x++) // x-dimension, traversing rows (i)
+      for (int y = 0; y < dimension; y++) { // y-dimension, traversing cols (j)
         int value = blocks[x][y]; // tiles array contains CBoard elements
         if (value != 0) { // we don't compute MD for element 0
-          int targetX = (value - 1) / dimen; // expected x-coordinate (row)
-          int targetY = (value - 1) % dimen; // expected y-coordinate (col)
+          int targetX = (value - 1) / dimension; // expected x-coordinate (row)
+          int targetY = (value - 1) % dimension; // expected y-coordinate (col)
           int dx = x - targetX; // x-distance to expected coordinate
           int dy = y - targetY; // y-distance to expected coordinate
           manhattanDistanceSum += Math.abs(dx) + Math.abs(dy);
         }
       }
-    return manhattanDistanceSum;
+    return manhattanDistanceSum;*/
   }
 
   public boolean isGoal()                // is this CBoard the goal CBoard?
   {
-    for (int i = 0; i < dimen; ++i) {
-      for (int j = 0; j < dimen; ++j) {
-        if (i * j == Math.pow(dimen - 1, 2)) {
+    for (int i = 0; i < dimension; ++i) {
+      for (int j = 0; j < dimension; ++j) {
+        if (i * j == Math.pow(dimension - 1, 2)) {
           if (!(this.blocks[i][j] == 0)) return false;
-        } else if (this.blocks[i][j] != (i * dimen) + (j + 1)) return false;
+        } else if (this.blocks[i][j] != (i * dimension) + (j + 1)) return false;
       }
     }
     return true;
@@ -73,16 +111,16 @@ public class CBoard {
   // two adjacent blocks in the same row
   {
     int val = 0;
-    int twinBlocks[][] = new int[dimen][dimen];
+    int twinBlocks[][] = new int[dimension][dimension];
 
-    for (int i = 0; i < dimen; ++i) {
-      for (int j = 0; j < dimen; ++j) {
+    for (int i = 0; i < dimension; ++i) {
+      for (int j = 0; j < dimension; ++j) {
         System.arraycopy(this.blocks[i], 0, twinBlocks[i], 0, this.blocks[i].length);
         //twinBlocks[i][j] = this.blocks[i][j];
       }
     }
 
-    for (int i = 0; i < dimen; ++i) {
+    for (int i = 0; i < dimension; ++i) {
       if (twinBlocks[0][i] == 0) {
         val++;
         break;
@@ -106,9 +144,9 @@ public class CBoard {
     if (y.getClass() != this.getClass()) return false;
     CBoard that = (CBoard) y;
     if (this.blocks.length != that.blocks.length) return false;
-    for (int i = 0; i < dimen; ++i) {
+    for (int i = 0; i < dimension; ++i) {
       if (this.blocks[i].length != that.blocks[i].length) return false;
-      for (int j = 0; j < dimen; ++j) {
+      for (int j = 0; j < dimension; ++j) {
         if (this.blocks[i][j] != that.blocks[i][j]) {
           return false;
         }
@@ -119,15 +157,7 @@ public class CBoard {
     return true;
   }
 
-  private int[][] blocksCopy(){
-    int[][] cpy = new int[dimen][dimen];
-
-    for (int i = 0; i < dimen; i++)
-      cpy[i] = Arrays.copyOf(blocks[i], blocks[i].length);
-
-    return cpy;
-  }
-  
+  //fixme replaced with my code
   public Iterable<CBoard> neighbors()     // all neighboring CBoards
   {
     Queue<CBoard> neighbors = new Queue<CBoard>();
@@ -135,14 +165,14 @@ public class CBoard {
     int zeroRowLoc = -1;
     int zeroColLoc = -1;
 
-    for (int row = 0; row < dimen; row++)
-      for (int col = 0; col < dimen; col++)
+    for (int row = 0; row < dimension; row++)
+      for (int col = 0; col < dimension; col++)
         if (blocks[row][col] == 0){
           zeroRowLoc = row;
           zeroColLoc = col;
         }
 
-    if (zeroRowLoc + 1 < dimen){
+    if (zeroRowLoc + 1 < dimension){
       int tmp = blocks[zeroRowLoc + 1][zeroColLoc];
       blocks[zeroRowLoc + 1][zeroColLoc] = 0;
       blocks[zeroRowLoc][zeroColLoc] = tmp;
@@ -164,7 +194,7 @@ public class CBoard {
       blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
-    if (zeroColLoc + 1 < dimen){
+    if (zeroColLoc + 1 < dimension){
       int tmp = blocks[zeroRowLoc][zeroColLoc + 1];
       blocks[zeroRowLoc][zeroColLoc + 1] = 0;
       blocks[zeroRowLoc][zeroColLoc] = tmp;
@@ -195,8 +225,8 @@ public class CBoard {
     CBoard b;
 
     outer:
-    for (int i = 0; i < dimen; ++i) {
-      for (int j = 0; j < dimen; ++j) {
+    for (int i = 0; i < dimension; ++i) {
+      for (int j = 0; j < dimension; ++j) {
         if (this.blocks[i][j] == 0) {
           x = i;
           y = j;
@@ -205,12 +235,11 @@ public class CBoard {
       }
     }
 
-    tmpBlocks = new int[dimen][dimen];
-    int tmpVar = 0;
-    for (int j = 0; j < dimen; ++j) {
+    tmpBlocks = new int[dimension][dimension];
+    for (int j = 0; j < dimension; ++j) {
       System.arraycopy(blocks[j], 0, tmpBlocks[j], 0, blocks[j].length);
     }
-    if (x > 0 && y > 0 && x < (dimen - 1) && y < (dimen - 1)) {
+    if (x > 0 && y > 0 && x < (dimension - 1) && y < (dimension - 1)) {
 
       for (int i = 0; i < 4; i++) {
         if (i == 0) {
@@ -267,7 +296,7 @@ public class CBoard {
         }
 
       }
-    } else if (x == 0 && y == dimen - 1) {
+    } else if (x == 0 && y == dimension - 1) {
 
       for (int i = 0; i < 2; i++) {
         if (i == 0) {
@@ -289,7 +318,7 @@ public class CBoard {
 
       }
 
-    } else if (x == dimen - 1 && y == 0) {
+    } else if (x == dimension - 1 && y == 0) {
       for (int i = 0; i < 2; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x - 1][y];
@@ -308,7 +337,7 @@ public class CBoard {
           tmpBlocks[x][y] = 0;
         }
       }
-    } else if (x == dimen - 1 && y == dimen - 1) {
+    } else if (x == dimension - 1 && y == dimension - 1) {
       for (int i = 0; i < 2; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x - 1][y];
@@ -327,7 +356,7 @@ public class CBoard {
           tmpBlocks[x][y] = 0;
         }
       }
-    } else if (x == 0 && y > 0 && y < dimen - 1) {
+    } else if (x == 0 && y > 0 && y < dimension - 1) {
       for (int i = 0; i < 3; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x + 1][y];
@@ -354,7 +383,7 @@ public class CBoard {
           tmpBlocks[x][y] = 0;
         }
       }
-    } else if (y == 0 && x > 0 && x < dimen - 1) {
+    } else if (y == 0 && x > 0 && x < dimension - 1) {
       for (int i = 0; i < 3; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x + 1][y];
@@ -381,7 +410,7 @@ public class CBoard {
           tmpBlocks[x][y] = 0;
         }
       }
-    } else if (x == dimen - 1 && y > 0 && y < dimen - 1) {
+    } else if (x == dimension - 1 && y > 0 && y < dimension - 1) {
       for (int i = 0; i < 3; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x - 1][y];
@@ -408,7 +437,7 @@ public class CBoard {
           tmpBlocks[x][y] = 0;
         }
       }
-    } else if (y == dimen - 1 && x > 0 && x < dimen - 1) {
+    } else if (y == dimension - 1 && x > 0 && x < dimension - 1) {
       for (int i = 0; i < 3; i++) {
         if (i == 0) {
           tmpBlocks[x][y] = tmpBlocks[x + 1][y];
@@ -436,15 +465,15 @@ public class CBoard {
         }
       }
     }
-    return neighborQueue;    */
+    return neighborQueue;*/
   }
 
   public String toString()               // string representation of the CBoard (in the output format specified below)
   {
     StringBuilder s = new StringBuilder();
-    s.append(dimen + "\n");
-    for (int i = 0; i < dimen; i++) {
-      for (int j = 0; j < dimen; j++) {
+    s.append(dimension + "\n");
+    for (int i = 0; i < dimension; i++) {
+      for (int j = 0; j < dimension; j++) {
         s.append(String.format("%2d ", blocks[i][j]));
       }
       s.append("\n");
