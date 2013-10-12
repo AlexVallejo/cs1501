@@ -1,60 +1,54 @@
 import java.util.*;
 
 public class Solver {
-  private PriorityQueue<mNode> pq;
-  private PriorityQueue<mNode> clonepq;
   private LinkedList<Board> goalSequence;
-  private int totalMoves = 0;
-  private int minMoves = 0;
   private boolean solvable = false;
-
   int moves = 0;
 
-
-  public Solver(Board initial)            // find a solution to the initial Board (using the A* algorithm)
+  public Solver(Board initial)
   {
     goalSequence = new LinkedList<Board>();
-    pq = new PriorityQueue<mNode>();
-    clonepq = new PriorityQueue<mNode>();
+    PriorityQueue<mNode> pq = new PriorityQueue<mNode>();
+    PriorityQueue<mNode> clonepq = new PriorityQueue<mNode>();
 
-    pq.add(new mNode(initial,totalMoves,  null));
-    clonepq.add(new mNode(initial.cloneAndSwap(), totalMoves,  null));
+    pq.add(new mNode(initial, moves, null));
+    clonepq.add(new mNode(initial.cloneAndSwap(), moves, null));
 
     Board prevBoard = initial;
 
     while (!pq.isEmpty() && !clonepq.isEmpty()) {
       mNode min = pq.remove();
-      Iterable<Board> neighbors = min.Board.neighbors();
+      Iterable<Board> neighbors = min.board.neighbors();
 
       if (min.prev != null)
-        prevBoard = min.prev.Board;
+        prevBoard = min.prev.board;
 
       for (Board board : neighbors) {
-        if (!prevBoard.equals(board)) { //fixme not adding to pq
+        if (!prevBoard.equals(board)) {
         pq.add(new mNode(board, min.numMoves + 1, min));
         }
       }
 
-      if (min.Board.isGoal()){
+      if (min.board.isGoal()){
         this.moves = min.numMoves;
         solvable = true;
         goalSequence(min);
         break;
       }
 
-      mNode cloneMin = clonepq.remove();
-      Iterable<Board> cloneNeighbors = cloneMin.Board.neighbors();
+      min = clonepq.remove();
+      Iterable<Board> cloneNeighbors = min.board.neighbors();
 
-      if (cloneMin.prev == null)
-        prevBoard = cloneMin.Board;
+      if (min.prev == null)
+        prevBoard = min.board;
       else
-        prevBoard = cloneMin.prev.Board;
+        prevBoard = min.prev.board;
 
       for (Board board : cloneNeighbors)
         if (!prevBoard.equals(board))
-        clonepq.add(new mNode(board, cloneMin.numMoves + 1, cloneMin));
+        clonepq.add(new mNode(board, min.numMoves + 1, min));
 
-      if (cloneMin.Board.isGoal()){
+      if (min.board.isGoal()){
         solvable = false;
         this.moves = -1;
         break;
@@ -65,9 +59,9 @@ public class Solver {
   private void goalSequence(mNode step) {
 
     while (step.prev != null) {
-      goalSequence.addFirst(step.Board);
+      goalSequence.addFirst(step.board);
       step = step.prev;
-      minMoves++;
+      //minMoves++;
     }
   }
 
@@ -76,11 +70,11 @@ public class Solver {
   }
 
   public int moves(){
-    return this.minMoves;
+    return this.moves;
   }
 
   public Iterable<Board> solution(){
-    if (this.minMoves != -1)
+    if (this.moves != -1)
       return goalSequence;
 
     else
@@ -89,22 +83,22 @@ public class Solver {
 
   private class mNode implements Comparable<mNode> {
     private int numMoves;
-    private Board Board;
+    private Board board;
     private mNode prev;
 
     public mNode(Board Board, int numMoves, mNode prev) {
       this.numMoves = numMoves;
-      this.Board = Board;
+      this.board = Board;
       this.prev = prev;
 
     }
 
     public int compareTo(mNode that) {
-      if (this.Board.manhattan() + this.numMoves > that.Board.manhattan() +
+      if (this.board.manhattan() + this.numMoves > that.board.manhattan() +
           that.numMoves)
         return 1;
 
-      else if (this.Board.manhattan() + this.numMoves < that.Board.manhattan()
+      else if (this.board.manhattan() + this.numMoves < that.board.manhattan()
           + that.numMoves)
         return -1;
 
@@ -113,11 +107,11 @@ public class Solver {
 
   }
 
-  public static void main(String[] args)  // solve a slider puzzle (given below)
+  public static void main(String[] args)
   {
     long startTime = System.currentTimeMillis();
 
-    // create initial Board from file
+    // create initial board from file
     In in = new In(args[0]);
     int N = in.readInt();
 
