@@ -14,15 +14,15 @@ public class Board {
   public int squares[][];
   private int dimension;
 
-  //Construct a board from an NxN array of blocks
-  public Board(int[][] blocks){
+  //Construct a board from an NxN array of squares
+  public Board(int[][] squares){
 
-    if (blocks.length != blocks[0].length){
+    if (squares.length != squares[0].length){
       System.out.println("Sorry, the board must be square.");
       System.exit(0);
     }
 
-    this.squares = blocks;
+    this.squares = squares;
     this.dimension = squares.length;
   }
 
@@ -36,7 +36,7 @@ public class Board {
 
   /**
    * Implements the hamming priority function for this board.
-   * @return the number of blocks out of place
+   * @return the number of squares out of place
    */
   public int hamming(){
 
@@ -181,7 +181,7 @@ public class Board {
    * current board.
    */
   public Iterable<Board> neighbors(){
-    LinkedList<Board> neighbors = new LinkedList<>();
+    Queue<Board> neighbors = new Queue<Board>();
 
     int zeroRowLoc = -1;
     int zeroColLoc = -1;
@@ -193,47 +193,48 @@ public class Board {
           zeroColLoc = col;
         }
 
-    int tmp;
-    int cpy[][] = squaresCopy();
-
     if (zeroRowLoc + 1 < dimension){
-      cpy = squaresCopy();
+      int tmp = squares[zeroRowLoc + 1][zeroColLoc];
+      squares[zeroRowLoc + 1][zeroColLoc] = 0;
+      squares[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc + 1][zeroColLoc];
-      cpy[zeroRowLoc + 1][zeroColLoc] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new Board(squares));
 
-      neighbors.add(new Board(cpy));
+      squares[zeroRowLoc + 1][zeroColLoc] = tmp;
+      squares[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroRowLoc - 1 >= 0){
-      cpy = squaresCopy();
+      int tmp = squares[zeroRowLoc - 1][zeroColLoc];
+      squares[zeroRowLoc - 1][zeroColLoc] = 0;
+      squares[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc - 1][zeroColLoc];
-      cpy[zeroRowLoc - 1][zeroColLoc] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new Board(squares));
 
-      neighbors.add(new Board(cpy));
+      squares[zeroRowLoc - 1][zeroColLoc] = tmp;
+      squares[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc + 1 < dimension){
-      cpy = squaresCopy();
+      int tmp = squares[zeroRowLoc][zeroColLoc + 1];
+      squares[zeroRowLoc][zeroColLoc + 1] = 0;
+      squares[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc][zeroColLoc + 1];
-      cpy[zeroRowLoc][zeroColLoc + 1] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new Board(squares));
 
-      neighbors.add(new Board(cpy));
+      squares[zeroRowLoc][zeroColLoc + 1] = tmp;
+      squares[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc - 1 >= 0){
-      cpy = squaresCopy();
+      int tmp = squares[zeroRowLoc][zeroColLoc - 1];
+      squares[zeroRowLoc][zeroColLoc - 1] = 0;
+      squares[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc][zeroColLoc -1];
-      cpy[zeroRowLoc][zeroColLoc - 1] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new Board(squares));
 
-      neighbors.add(new Board(cpy));
+      squares[zeroRowLoc][zeroColLoc - 1] = tmp;
+      squares[zeroRowLoc][zeroColLoc] = 0;
     }
 
     return neighbors;

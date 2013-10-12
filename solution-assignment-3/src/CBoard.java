@@ -147,37 +147,43 @@ public class CBoard {
       blocks[zeroRowLoc + 1][zeroColLoc] = 0;
       blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      neighbors.enqueue(new CBoard(cpy));
+      neighbors.enqueue(new CBoard(blocks));
+
+      blocks[zeroRowLoc + 1][zeroColLoc] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroRowLoc - 1 >= 0){
-      cpy = blocksCopy();
+      int tmp = blocks[zeroRowLoc - 1][zeroColLoc];
+      blocks[zeroRowLoc - 1][zeroColLoc] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc - 1][zeroColLoc];
-      cpy[zeroRowLoc - 1][zeroColLoc] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new CBoard(blocks));
 
-      neighbors.enqueue(new CBoard(cpy));
+      blocks[zeroRowLoc - 1][zeroColLoc] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc + 1 < dimen){
-      cpy = blocksCopy();
+      int tmp = blocks[zeroRowLoc][zeroColLoc + 1];
+      blocks[zeroRowLoc][zeroColLoc + 1] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc][zeroColLoc + 1];
-      cpy[zeroRowLoc][zeroColLoc + 1] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new CBoard(blocks));
 
-      neighbors.enqueue(new CBoard(cpy));
+      blocks[zeroRowLoc][zeroColLoc + 1] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     if (zeroColLoc - 1 >= 0){
-      cpy = blocksCopy();
+      int tmp = blocks[zeroRowLoc][zeroColLoc - 1];
+      blocks[zeroRowLoc][zeroColLoc - 1] = 0;
+      blocks[zeroRowLoc][zeroColLoc] = tmp;
 
-      tmp = cpy[zeroRowLoc][zeroColLoc -1];
-      cpy[zeroRowLoc][zeroColLoc - 1] = 0;
-      cpy[zeroRowLoc][zeroColLoc] = tmp;
+      neighbors.enqueue(new CBoard(blocks));
 
-      neighbors.enqueue(new CBoard(cpy));
+      blocks[zeroRowLoc][zeroColLoc - 1] = tmp;
+      blocks[zeroRowLoc][zeroColLoc] = 0;
     }
 
     return neighbors;
