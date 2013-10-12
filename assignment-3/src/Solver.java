@@ -111,7 +111,7 @@ public class Solver {
     Board initial = new Board(blocks);      // solve the puzzle
     Solver solver = new Solver(initial);    // print solution to standard output
 
-    if (!initial.isSolvable())
+    if (!solver.isSolvable())
       System.out.println("No solution possible");
 
     else {
