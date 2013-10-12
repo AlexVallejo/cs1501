@@ -71,7 +71,7 @@ public class CBoard {
 
         if (val != 0){
           int expectedRowVal = (val - 1) / dimension;
-          int expectedColVal = (val - 2) % dimension;
+          int expectedColVal = (val - 1) % dimension;
 
           priority += Math.abs(row - expectedRowVal) + Math.abs(col -
               expectedColVal);
