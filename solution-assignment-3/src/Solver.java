@@ -128,8 +128,10 @@ public class Solver implements nPuzzleSolver {
     else {
       StdOut.println("Minimum number of moves = " + Solver.moves());
 
-      for (Board Board : Solver.solution())
-        StdOut.println(Board);
+      for (Board board : Solver.solution()){
+        StdOut.println();
+        StdOut.println(board);
+      }
     }
 
     long endTime   = System.currentTimeMillis();
