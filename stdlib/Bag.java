@@ -2,7 +2,7 @@
  *  Compilation:  javac Bag.java
  *  Execution:    java Bag < input.txt
  *
- *  A generic bag or multiset, implemented using a linked list.
+ *  A generic bag or multiset, implemented using a singly-linked list.
  *
  *  % more tobe.txt 
  *  to be or not to - be - - that - - - is
@@ -34,91 +34,80 @@ import java.util.NoSuchElementException;
  *  generic items. It supports insertion and iterating over the 
  *  items in arbitrary order.
  *  <p>
- *  The <em>add</em>, <em>isEmpty</em>, and <em>size</em>  operation 
+ *  This implementation uses a singly-linked list with a static nested class Node.
+ *  See {@link LinkedBag} for the version from the
+ *  textbook that uses a non-static nested class.
+ *  The <em>add</em>, <em>isEmpty</em>, and <em>size</em> operations
  *  take constant time. Iteration takes time proportional to the number of items.
  *  <p>
  *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/13stacks">Section 1.3</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
+ *
+ *  @author Robert Sedgewick
+ *  @author Kevin Wayne
  */
 public class Bag<Item> implements Iterable<Item> {
-    private int N;         // number of elements in bag
-    private Node first;    // beginning of bag
+    private int N;               // number of elements in bag
+    private Node<Item> first;    // beginning of bag
 
     // helper linked list class
-    private class Node {
+    private class Node<Item> {
         private Item item;
-        private Node next;
+        private Node<Item> next;
     }
 
-   /**
-     * Create an empty stack.
+    /**
+     * Initializes an empty bag.
      */
     public Bag() {
         first = null;
         N = 0;
-        assert check();
     }
 
-   /**
-     * Is the BAG empty?
+    /**
+     * Is this bag empty?
+     * @return true if this bag is empty; false otherwise
      */
     public boolean isEmpty() {
         return first == null;
     }
 
-   /**
-     * Return the number of items in the bag.
+    /**
+     * Returns the number of items in this bag.
+     * @return the number of items in this bag
      */
     public int size() {
         return N;
     }
 
-   /**
-     * Add the item to the bag.
+    /**
+     * Adds the item to this bag.
+     * @param item the item to add to this bag
      */
     public void add(Item item) {
-        Node oldfirst = first;
-        first = new Node();
+        Node<Item> oldfirst = first;
+        first = new Node<Item>();
         first.item = item;
         first.next = oldfirst;
         N++;
-        assert check();
     }
 
-    // check internal invariants
-    private boolean check() {
-        if (N == 0) {
-            if (first != null) return false;
-        }
-        else if (N == 1) {
-            if (first == null)      return false;
-            if (first.next != null) return false;
-        }
-        else {
-            if (first.next == null) return false;
-        }
 
-        // check internal consistency of instance variable N
-        int numberOfNodes = 0;
-        for (Node x = first; x != null; x = x.next) {
-            numberOfNodes++;
-        }
-        if (numberOfNodes != N) return false;
-
-        return true;
-    } 
-
-
-   /**
-     * Return an iterator that iterates over the items in the bag.
+    /**
+     * Returns an iterator that iterates over the items in the bag in arbitrary order.
+     * @return an iterator that iterates over the items in the bag in arbitrary order
      */
     public Iterator<Item> iterator()  {
-        return new ListIterator();  
+        return new ListIterator<Item>(first);  
     }
 
     // an iterator, doesn't implement remove() since it's optional
-    private class ListIterator implements Iterator<Item> {
-        private Node current = first;
+    private class ListIterator<Item> implements Iterator<Item> {
+        private Node<Item> current;
+
+        public ListIterator(Node<Item> first) {
+            current = first;
+        }
 
         public boolean hasNext()  { return current != null;                     }
         public void remove()      { throw new UnsupportedOperationException();  }
@@ -131,8 +120,8 @@ public class Bag<Item> implements Iterable<Item> {
         }
     }
 
-   /**
-     * A test client.
+    /**
+     * Unit tests the <tt>Bag</tt> data type.
      */
     public static void main(String[] args) {
         Bag<String> bag = new Bag<String>();
