@@ -53,7 +53,7 @@ public class CC {
      * Computes the connected components of the undirected graph <tt>G</tt>.
      * @param G the graph
      */
-    public CC(Graph G) {
+    public CC(EdgeWeightedGraph G) {
         marked = new boolean[G.V()];
         id = new int[G.V()];
         size = new int[G.V()];
@@ -66,12 +66,12 @@ public class CC {
     }
 
     // depth-first search
-    private void dfs(Graph G, int v) {
+    private void dfs(EdgeWeightedGraph G, int v) {
         marked[v] = true;
         id[v] = count;
         size[count]++;
-        for (int w : G.adj(v)) {
-            if (!marked[w]) {
+        for (Edge e : G.adj(v)) {
+            if (!marked[e.either()]) {
                 dfs(G, w);
             }
         }
