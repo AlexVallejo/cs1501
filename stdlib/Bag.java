@@ -93,7 +93,7 @@ public class Bag<Item> implements Iterable<Item> {
     }
 
 
-    public Item remove(){
+    private Item remove(){
       Item result = null;
 
       if (first != null){

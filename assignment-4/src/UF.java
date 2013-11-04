@@ -21,10 +21,6 @@
  *
  ****************************************************************************/
 
-
-import sun.jvm.hotspot.utilities.Hashtable;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,7 +97,6 @@ public class UF {
   private int[] id;     // id[i] = parent of i
   private byte[] rank;  // rank[i] = rank of subtree rooted at i (cannot be more than 31)
   private int count;    // number of components
-
 
   /**
    * Initializes an empty union-find data structure with <tt>N</tt>
@@ -183,7 +178,6 @@ public class UF {
     return find(p) == find(q);
   }
 
-
   /**
    * Merges the component containing site <tt>p</tt> with the
    * the component containing site <tt>q</tt>.
@@ -209,38 +203,34 @@ public class UF {
     count--;
   }
 
+  public void printComponents() {
+    // Create a hashtable that holds a string for each component
+    // Add to that string each time you find a vertex that belongs to a given
+    // component
 
-  /**
-   * Reads in a an integer <tt>N</tt> and a sequence of pairs of integers
-   * (between <tt>0</tt> and <tt>N-1</tt>) from standard input, where each integer
-   * in the pair represents some site;
-   * if the sites are in different components, merge the two components
-   * and print the pair to standard output.
-   */
-
-
-  public void print() {
     Map<Integer, String> components = new HashMap<Integer, String>(); // Parent, Children
 
     for (int i = 0; i < id.length; i++) {
-      int thisNodeParent = id[i];
+      int parent = id[i];
 
-      if (components.containsKey(thisNodeParent)) {
-        String disComponent = components.get(thisNodeParent);
-        disComponent = disComponent + " " + i;
-        components.put(thisNodeParent, disComponent);
-      } else components.put(thisNodeParent, i + "");
+      if (components.containsKey(parent)) {
+        String str = components.get(parent);
+
+        str = str + " " + i;
+
+        components.put(parent, str);
+      } 
+      
+      else components.put(parent, i + "");
 
     }
 
-    System.out.println("Connected Components");
+    System.out.println("Connected Components:");
 
     int count = 1;
     for (Integer i : components.keySet()) {
       System.out.println(count + ".  " + components.get(i));
       count++;
-    }
-
-  }
-
-}
+    }// end for i in component keys
+  }// end printComponents
+}// end UF

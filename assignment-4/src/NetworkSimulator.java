@@ -29,7 +29,7 @@ public class NetworkSimulator {
 
         // Report display current active network and connected components
         case 1:
-          UF reporter = new UF( (EdgeWeightedGraph) network);
+          report();
           break;
 
         // Print the MST for the network
@@ -81,6 +81,13 @@ public class NetworkSimulator {
     }// end while(true)
   }// end main
 
+  private static void report(){
+    System.out.println(network);
+
+    UF cc = new UF(network);
+    cc.printComponents();
+
+  }
 
   private static void changeWeight(){
     // Collect the required input from the user

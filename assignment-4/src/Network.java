@@ -55,4 +55,8 @@ public class Network extends EdgeWeightedGraph {
     Edge e = new Edge(vertex1, vertex2 ,latency);
     addEdge(e);
   }
+
+  public String toString(){
+    return super.toString();
+  }
 }

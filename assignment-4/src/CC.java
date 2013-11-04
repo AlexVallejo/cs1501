@@ -114,7 +114,6 @@ public class CC {
         return id(v) == id(w);
     }
 
-
     /**
      * Unit tests the <tt>CC</tt> data type.
      */

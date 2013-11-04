@@ -174,7 +174,7 @@ public class EdgeWeightedGraph {
     int v = e.either();
     int w = e.other(v);
     adj[v].add(e);
-    adj[w].add(e);
+    adj[w].add(new Edge(w, v, e.weight()));
     E++;
   }
 
