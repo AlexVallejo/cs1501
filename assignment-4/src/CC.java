@@ -72,7 +72,7 @@ public class CC {
         size[count]++;
         for (Edge e : G.adj(v)) {
             if (!marked[e.either()]) {
-                dfs(G, w);
+                dfs(G, e.either());
             }
         }
     }
@@ -120,7 +120,7 @@ public class CC {
      */
     public static void main(String[] args) {
         In in = new In(args[0]);
-        Graph G = new Graph(in);
+        EdgeWeightedGraph G = new EdgeWeightedGraph(in);
         CC cc = new CC(G);
 
         // number of connected components
