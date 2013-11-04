@@ -30,7 +30,7 @@ public class Network extends EdgeWeightedGraph {
     DijkstraSP s = new DijkstraSP(this, one);
 
     if(s.hasPathTo(two)){
-      System.out.println("The shortest path from "+ one +" to "+ two +"is:");
+      System.out.println("The shortest path from "+ one +" to "+ two +" is:");
       System.out.println(s.pathTo(two));
     }
 

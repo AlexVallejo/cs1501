@@ -21,6 +21,7 @@ public class NetworkSimulator {
       Scanner keyboard = new Scanner(System.in);
       System.out.print("Enter your choice: ");
       int input = keyboard.nextInt();
+      System.out.println();
 
       switch (input){
 
@@ -35,9 +36,9 @@ public class NetworkSimulator {
 
         // Calculate the shortest path between two vertices
         case 3:
-          System.out.print("\nEnter the from vertex: ");
+          System.out.print("Enter the from vertex: ");
           int one = keyboard.nextInt();
-          System.out.print("\nEnter the to vertex: ");
+          System.out.print("Enter the to vertex: ");
           int two = keyboard.nextInt();
 
           network.shortestPath(one, two);
@@ -57,9 +58,9 @@ public class NetworkSimulator {
           // Collect the required input from the user
           System.out.print("Enter from vertex: ");
           int from = keyboard.nextInt();
-          System.out.print("\nEnter to vertex: ");
+          System.out.print("Enter to vertex: ");
           int to = keyboard.nextInt();
-          System.out.print("\nEnter the new weight: ");
+          System.out.print("Enter the new weight: ");
           double weight = keyboard.nextDouble();
 
           Edge newEdge = new Edge(from, to, weight);
@@ -67,7 +68,7 @@ public class NetworkSimulator {
           // Find the edge to be modified and cache it for display purposes
           Edge oldEdge = null;
           for (Edge edge : network.edges())
-            if (oldEdge.equals(newEdge))
+            if (newEdge.equals(edge))
               oldEdge = edge;
 
           // If the edge does not exist within the network: EXIT
@@ -81,7 +82,7 @@ public class NetworkSimulator {
           network.changeWeightOfEdge(oldEdge, weight);
 
           // Inform the user their requested edge was changed
-          System.out.println("Change edge " + from + " -> " + to + " from " +
+          System.out.println("\nChange edge " + from + " -> " + to + " from " +
               oldEdge.weight() + " to " + newEdge.weight());
           break;
 
