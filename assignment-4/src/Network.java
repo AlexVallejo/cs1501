@@ -27,7 +27,16 @@ public class Network extends EdgeWeightedGraph {
   }
 
   public void shortestPath(int one, int two){
-    System.out.println("Not yet implemented");
+    DijkstraSP s = new DijkstraSP(this, one);
+
+    if(s.hasPathTo(two)){
+      System.out.println("The shortest path from "+ one +" to "+ two +"is:");
+      System.out.println(s.pathTo(two));
+    }
+
+    else
+      System.out.println("There is no path from " + one + " to " + two);
+
   }
 
   public void changeWeightOfEdge(Edge edge, double newWeight){

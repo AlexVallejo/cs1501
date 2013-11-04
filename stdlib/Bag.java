@@ -92,6 +92,38 @@ public class Bag<Item> implements Iterable<Item> {
         N++;
     }
 
+    public void remove(Item e)  // TODO Implemented my Ethan
+    {
+        Node<Item> n = first;
+
+        if(n.item.equals(e)) {
+            first = n.next;
+            return;
+        }
+
+        while(n.next != null)
+        {
+
+           if(n.next.item.equals(e))
+           {
+                if(n.next.next != null)
+                {
+                    n.next = n.next.next;
+                    return;
+                }
+                else
+                {
+                    n.next = null;
+                    return;
+                }
+
+           }
+           else n = n.next;
+
+        }
+
+        System.out.println("Item " + e + " not found in the bag");
+      }
 
     /**
      * Returns an iterator that iterates over the items in the bag in arbitrary order.

@@ -19,7 +19,7 @@ public class NetworkSimulator {
       printInstructions();
 
       Scanner keyboard = new Scanner(System.in);
-      System.out.println("Enter your choice: ");
+      System.out.print("Enter your choice: ");
       int input = keyboard.nextInt();
 
       switch (input){
@@ -35,9 +35,13 @@ public class NetworkSimulator {
 
         // Calculate the shortest path between two vertices
         case 3:
+          System.out.print("\nEnter the from vertex: ");
           int one = keyboard.nextInt();
+          System.out.print("\nEnter the to vertex: ");
           int two = keyboard.nextInt();
+
           network.shortestPath(one, two);
+
           break;
 
         // Take down a certain edge
@@ -51,11 +55,11 @@ public class NetworkSimulator {
         // Change weight of certain edge
         case 6:
           // Collect the required input from the user
-          System.out.println("Enter from vertex: ");
+          System.out.print("Enter from vertex: ");
           int from = keyboard.nextInt();
-          System.out.println("Enter to vertex: ");
+          System.out.print("\nEnter to vertex: ");
           int to = keyboard.nextInt();
-          System.out.println("Enter the new weight: ");
+          System.out.print("\nEnter the new weight: ");
           double weight = keyboard.nextDouble();
 
           Edge newEdge = new Edge(from, to, weight);
