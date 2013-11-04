@@ -6,19 +6,21 @@
  * Peoplesoft: 357-8411
  */
 
-import java.util.Iterator;
 import java.util.Scanner;
 
 public class NetworkSimulator {
 
+  static Network network;
+  static Scanner keyboard;
+
   public static void main(String args[]){
-    Network network = new Network(args[0]);
+    network = new Network(args[0]);
 
     while (true){
 
       printInstructions();
 
-      Scanner keyboard = new Scanner(System.in);
+      keyboard = new Scanner(System.in);
       System.out.print("Enter your choice: ");
       int input = keyboard.nextInt();
       System.out.println();
@@ -36,13 +38,7 @@ public class NetworkSimulator {
 
         // Calculate the shortest path between two vertices
         case 3:
-          System.out.print("Enter the from vertex: ");
-          int one = keyboard.nextInt();
-          System.out.print("Enter the to vertex: ");
-          int two = keyboard.nextInt();
-
-          network.shortestPath(one, two);
-
+          shortestPath();
           break;
 
         // Take down a certain edge
@@ -55,35 +51,7 @@ public class NetworkSimulator {
 
         // Change weight of certain edge
         case 6:
-          // Collect the required input from the user
-          System.out.print("Enter from vertex: ");
-          int from = keyboard.nextInt();
-          System.out.print("Enter to vertex: ");
-          int to = keyboard.nextInt();
-          System.out.print("Enter the new weight: ");
-          double weight = keyboard.nextDouble();
-
-          Edge newEdge = new Edge(from, to, weight);
-
-          // Find the edge to be modified and cache it for display purposes
-          Edge oldEdge = null;
-          for (Edge edge : network.edges())
-            if (newEdge.equals(edge))
-              oldEdge = edge;
-
-          // If the edge does not exist within the network: EXIT
-          if (oldEdge == null){
-            System.out.println("This edge was not found in the graph. Try " +
-                "again.");
-            break;
-          }
-
-          // Else the edge is within the graph
-          network.changeWeightOfEdge(oldEdge, weight);
-
-          // Inform the user their requested edge was changed
-          System.out.println("\nChange edge " + from + " -> " + to + " from " +
-              oldEdge.weight() + " to " + newEdge.weight());
+          changeWeight();
           break;
 
         // Does the graph have a Eulerian tour or path?
@@ -97,6 +65,48 @@ public class NetworkSimulator {
       }// end switch
     }// end while(true)
   }// end main
+
+
+  private static void changeWeight(){
+    // Collect the required input from the user
+    System.out.print("Enter from vertex: ");
+    int from = keyboard.nextInt();
+    System.out.print("Enter to vertex: ");
+    int to = keyboard.nextInt();
+    System.out.print("Enter the new weight: ");
+    double weight = keyboard.nextDouble();
+
+    Edge newEdge = new Edge(from, to, weight);
+
+    // Find the edge to be modified and cache it for display purposes
+    Edge oldEdge = null;
+    for (Edge edge : network.edges())
+      if (newEdge.equals(edge))
+        oldEdge = edge;
+
+    // If the edge does not exist within the network: EXIT
+    if (oldEdge == null){
+      System.out.println("This edge was not found in the graph. Try " +
+          "again.");
+      return;
+    }
+
+    // Else the edge is within the graph
+    network.changeWeightOfEdge(oldEdge, weight);
+
+    // Inform the user their requested edge was changed
+    System.out.println("\nChange edge " + from + " -> " + to + " from " +
+        oldEdge.weight() + " to " + newEdge.weight());
+  }
+
+  private static void shortestPath(){
+    System.out.print("Enter the from vertex: ");
+    int one = keyboard.nextInt();
+    System.out.print("Enter the to vertex: ");
+    int two = keyboard.nextInt();
+
+    network.shortestPath(one, two);
+  }
 
   private static void printInstructions(){
     System.out.println("\n1. R (eport)");
