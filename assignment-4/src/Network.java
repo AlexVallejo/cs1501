@@ -30,8 +30,20 @@ public class Network extends EdgeWeightedGraph {
     System.out.println("Not yet implemented");
   }
 
+  public void changeWeightOfEdge(Edge edge, double newWeight){
+
+    // b/c edges are immutable, remove the old one and add a new one
+    // with the updated weight
+
+    Edge newEdge = new Edge(edge.either(), edge.other(edge.either()),
+        newWeight);
+
+    removeEdge(edge);
+    addEdge(newEdge);
+  }
+
   public void up(int vertex1, int vertex2, int latency){
-    Edge e = new Edge(vertex1,vertex1,latency);
+    Edge e = new Edge(vertex1, vertex2 ,latency);
     addEdge(e);
   }
 }

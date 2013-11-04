@@ -6,6 +6,7 @@
  * Peoplesoft: 357-8411
  */
 
+import java.util.Iterator;
 import java.util.Scanner;
 
 public class NetworkSimulator {
@@ -43,12 +44,41 @@ public class NetworkSimulator {
         case 4:
           break;
 
-        // Bring a certain edge
+        // Bring up a certain edge
         case 5:
           break;
 
         // Change weight of certain edge
         case 6:
+          // Collect the required input from the user
+          System.out.println("Enter from vertex: ");
+          int from = keyboard.nextInt();
+          System.out.println("Enter to vertex: ");
+          int to = keyboard.nextInt();
+          System.out.println("Enter the new weight: ");
+          double weight = keyboard.nextDouble();
+
+          Edge newEdge = new Edge(from, to, weight);
+
+          // Find the edge to be modified and cache it for display purposes
+          Edge oldEdge = null;
+          for (Edge edge : network.edges())
+            if (oldEdge.equals(newEdge))
+              oldEdge = edge;
+
+          // If the edge does not exist within the network: EXIT
+          if (oldEdge == null){
+            System.out.println("This edge was not found in the graph. Try " +
+                "again.");
+            break;
+          }
+
+          // Else the edge is within the graph
+          network.changeWeightOfEdge(oldEdge, weight);
+
+          // Inform the user their requested edge was changed
+          System.out.println("Change edge " + from + " -> " + to + " from " +
+              oldEdge.weight() + " to " + newEdge.weight());
           break;
 
         // Does the graph have a Eulerian tour or path?

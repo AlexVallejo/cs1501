@@ -182,7 +182,7 @@ public class EdgeWeightedGraph {
    * @param e
    * @return
    */
-  /*public boolean removeEdge(Edge e) {
+  public boolean removeEdge(Edge e) {
 
     int v = e.either();
     int w = e.other(v);
@@ -193,7 +193,7 @@ public class EdgeWeightedGraph {
     E--;
 
     return true;
-  }  */
+  }
 
   /**
    * Returns the edges incident on vertex <tt>v</tt>.
