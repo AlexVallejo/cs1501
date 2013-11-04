@@ -29,6 +29,7 @@ public class NetworkSimulator {
 
         // Report display current active network and connected components
         case 1:
+          UF reporter = new UF( (EdgeWeightedGraph) network);
           break;
 
         // Print the MST for the network
@@ -43,10 +44,24 @@ public class NetworkSimulator {
 
         // Take down a certain edge
         case 4:
-          break;
+          System.out.println("Enter from vertex: ");
+          int from = keyboard.nextInt();
+          System.out.println("Enter to vertex: ");
+          int to = keyboard.nextInt();
+
+          if (network.removeEdge(new Edge(from, to, 10))){
+            System.out.println("");
+            break;
+          }
+          else {
+            System.out.println("This edge is not in the graph!");
+            break;
+          }
 
         // Bring up a certain edge
         case 5:
+          System.out.println("Enter from vertex: ");
+          System.out.println("Enter to vertex: ");
           break;
 
         // Change weight of certain edge

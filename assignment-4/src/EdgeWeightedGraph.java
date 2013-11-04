@@ -188,12 +188,13 @@ public class EdgeWeightedGraph {
     int v = e.either();
     int w = e.other(v);
 
-    adj[v].remove(e);
-    adj[w].remove(e);
+    if (adj[v].remove(e) && adj[w].remove(e)){
+      E--;
+      return true;
+    }
 
-    E--;
+    return false;
 
-    return true;
   }
 
   /**

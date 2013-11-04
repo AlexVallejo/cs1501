@@ -92,13 +92,54 @@ public class Bag<Item> implements Iterable<Item> {
         N++;
     }
 
-    public void remove(Item e)  // TODO Implemented my Ethan
+
+    public Item remove(){
+      Item result = null;
+
+      if (first != null){
+        result = first.item;
+        first = first.next;
+        N--;
+      }
+
+      return result;
+    }
+
+    private Node getReferenceTo(Item anEntry){
+      boolean found = false;
+      Node currentNode = first;
+
+      while(!found && (currentNode != null)){
+        if (anEntry.equals(currentNode.item))
+          found = true;
+        else
+          currentNode = currentNode.next;
+      }
+
+      return currentNode;
+    }
+
+    public boolean remove(Item anEntry){
+      boolean result = false;
+      Node nodeN = getReferenceTo(anEntry);
+
+      if (nodeN != null){
+        nodeN.item = first.item;  //replace located entry with entry in first node and remove first node
+        remove();
+        result = true;
+      }
+
+      return result;
+    }
+
+
+    /*public boolean remove(Item e)  // TODO Implemented my Ethan
     {
         Node<Item> n = first;
 
         if(n.item.equals(e)) {
             first = n.next;
-            return;
+            return true;
         }
 
         while(n.next != null)
@@ -109,21 +150,21 @@ public class Bag<Item> implements Iterable<Item> {
                 if(n.next.next != null)
                 {
                     n.next = n.next.next;
-                    return;
+                    return true;
                 }
                 else
                 {
                     n.next = null;
-                    return;
+                    return true;
                 }
 
            }
            else n = n.next;
 
         }
-
-        System.out.println("Item " + e + " not found in the bag");
-      }
+        return false;
+        //System.out.println("Item " + e + " not found in the bag");
+      }*/
 
     /**
      * Returns an iterator that iterates over the items in the bag in arbitrary order.
