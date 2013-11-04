@@ -179,8 +179,9 @@ public class EdgeWeightedGraph {
   }
 
   /**
-   * @param e
-   * @return
+   * Remove a given edge from the graph
+   * @param e the edge to remove
+   * @return  return true if the edge was successfully removed
    */
   public boolean removeEdge(Edge e) {
 
