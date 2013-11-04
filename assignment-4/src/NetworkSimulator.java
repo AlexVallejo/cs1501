@@ -23,28 +23,39 @@ public class NetworkSimulator {
 
       switch (input){
 
+        // Report display current active network and connected components
         case 1:
           break;
 
+        // Print the MST for the network
         case 2:
           network.mst();
           break;
 
+        // Calculate the shortest path between two vertices
         case 3:
+          int one = keyboard.nextInt();
+          int two = keyboard.nextInt();
+          network.shortestPath(one, two);
           break;
 
+        // Take down a certain edge
         case 4:
           break;
 
+        // Bring a certain edge
         case 5:
           break;
 
+        // Change weight of certain edge
         case 6:
           break;
 
+        // Does the graph have a Eulerian tour or path?
         case 7:
           break;
 
+        // Quit the program
         case 8:
           System.exit(0);
           break;

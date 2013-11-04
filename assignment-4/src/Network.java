@@ -26,6 +26,10 @@ public class Network extends EdgeWeightedGraph {
     StdOut.printf("%.5f\n", mst.weight());
   }
 
+  public void shortestPath(int one, int two){
+    System.out.println("Not yet implemented");
+  }
+
   public void up(int vertex1, int vertex2, int latency){
     Edge e = new Edge(vertex1,vertex1,latency);
     addEdge(e);
