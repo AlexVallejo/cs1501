@@ -3,7 +3,7 @@
  *  Execution:    java Checker filename1.txt filename2.txt ...
  *  Dependencies: Board.java Solver.java In.java
  *
- *  This program creates an initial board from each filename specified
+ *  This program creates an initial Board from each filename specified
  *  on the command line and finds the minimum number of moves to
  *  reach the goal state.
  *
@@ -23,36 +23,43 @@
  *  puzzle44.txt: 44
  *  puzzle45.txt: 45
  *
- * 
+ *
  *  Remark: In.java is part of stdlib.jar. You can also download it
  *  directly from http://www.cs.princeton.edu/introcs/stdlib/
  *
  *************************************************************************/
+
 import java.util.*;
 import java.io.*;
 
 public class Checker {
 
-    public static void main(String[] args) throws IOException{
-        Scanner in;
+  public static void main(String[] args) throws IOException {
+    Scanner in;
 
-        // for each command-line argument
-        for (String filename : args) {
+    long startTime = System.currentTimeMillis();
 
-            // read in the board specified in the filename
-            in = new Scanner(new File(filename));
-            int N = in.nextInt();
-            int[][] tiles = new int[N][N];
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < N; j++) {
-                    tiles[i][j] = in.nextInt();
-                }
-            }
+    // for each command-line argument
+    for (String filename : args) {
 
-            // solve the slider puzzle
-            Board initial = new Board(tiles);
-            Solver solver = new Solver(initial);
-            System.out.println(filename + ": " + solver.moves());
+      // read in the Board specified in the filename
+      in = new Scanner(new File(filename));
+      int N = in.nextInt();
+      int[][] tiles = new int[N][N];
+      for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+          tiles[i][j] = in.nextInt();
         }
+      }
+
+      // solve the slider puzzle
+      Board initial = new Board(tiles);
+      Solver solver = new Solver(initial);
+      System.out.println(filename + ": " + solver.moves());
     }
+
+    long endTime = System.currentTimeMillis();
+    double totalTime = (double) (endTime - startTime) / 1000.0;
+    System.out.println("Time elapsed => " + totalTime);
+  }
 }

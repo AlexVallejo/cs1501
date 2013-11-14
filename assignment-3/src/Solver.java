@@ -1,144 +1,141 @@
-/**
- * Created By: Alex Vallejo
- * Date: 10/02/13
- * Project: assignment-2
- * Email: amv49@pitt.edu
- * Peoplesoft: 357-8411
- */
+import java.util.*;
 
-import java.util.LinkedList;
-import java.util.Stack;
+public class Solver implements nPuzzleSolver {
 
-public class Solver {
+  private LinkedList<Board> goalSequence;
+  private boolean solvable = false;
+  int moves = 0;
 
-  private final MinPQ<Node> pqOriginal;
-  private final MinPQ<Node> pqTwin;
-  private final Stack<Board> shortestBoardSequence;
-  private int totalMoves = 0;
-  private int shortestNumOfMove = 0;
-  private boolean solved = false;
+  public Solver(Board initial){
+    goalSequence = new LinkedList<Board>();
+    PriorityQueue<Node> pq = new PriorityQueue<Node>();
+    PriorityQueue<Node> clonepq = new PriorityQueue<Node>();
 
-  public Solver(Board initial)            // find a solution to the initial Board (using the A* algorithm)
-  {
-    shortestBoardSequence = new Stack<Board>();
-    pqOriginal = new MinPQ<Node>();
-    pqTwin = new MinPQ<Node>();
-    pqOriginal.insert(new Node(initial, totalMoves, null));
-    pqTwin.insert(new Node(initial.cloneAndSwap(), totalMoves,  null));
+    pq.add(new Node(initial, moves, null));
+    clonepq.add(new Node(initial.cloneAndSwap(), moves, null));
 
-    Queue<Board> neighborCBoards = new Queue<Board>();
-    Board previousBoard = initial;
-    Node originalNode;
-    Node twinNode;
+    Board prevBoard = initial;
 
-    outer:
-    while (!pqOriginal.isEmpty() && !pqTwin.isEmpty()) {
-      originalNode = pqOriginal.delMin();
-      neighborCBoards = (Queue<Board>) originalNode.board.neighbors();
+    while (!pq.isEmpty() && !clonepq.isEmpty()) {
+      Node min = pq.remove();
+      Iterable<Board> neighbors = min.board.neighbors();
 
-      if (originalNode.prev != null) {
-        previousBoard = originalNode.prev.board;
-      }
+      if (min.prev != null)
+        prevBoard = min.prev.board;
 
-      for (Board neighborBoard : neighborCBoards) {
-        if (!previousBoard.equals((Board) neighborBoard)) {
-          totalMoves = originalNode.numMoves + 1;
-          pqOriginal.insert(new Node(neighborBoard, totalMoves, originalNode));
+      for (Board board : neighbors) {
+        if (!prevBoard.equals(board)) {
+        pq.add(new Node(board, min.numMoves + 1, min));
         }
       }
 
-      if (originalNode.board.isGoal()) {
-        solved = true;
-        goalSequence(originalNode);
-        shortestBoardSequence.push(initial);
-        break outer;
+      if (min.board.isGoal()){
+        this.moves = min.numMoves;
+        solvable = true;
+        setGoalSequence(min);
+        break;
       }
 
-      twinNode = pqTwin.delMin();
-      neighborCBoards = (Queue<Board>) twinNode.board.neighbors();
-      if (twinNode.prev != null) {
-        previousBoard = twinNode.prev.board;
-      }
-      for (Board neighborBoard : neighborCBoards) {
-        if (!previousBoard.equals((Board) neighborBoard)) {
-          pqTwin.insert(new Node(neighborBoard, totalMoves, twinNode));
-        }
-      }
-      if (twinNode.board.isGoal()) {
-        shortestNumOfMove = -1;
-        solved = false;
-        break outer;
+      min = clonepq.remove();
+      Iterable<Board> cloneNeighbors = min.board.neighbors();
+
+      if (min.prev == null)
+        prevBoard = min.board;
+      else
+        prevBoard = min.prev.board;
+
+      for (Board board : cloneNeighbors)
+        if (!prevBoard.equals(board))
+        clonepq.add(new Node(board, min.numMoves + 1, min));
+
+      if (min.board.isGoal()){
+        solvable = false;
+        this.moves = -1;
+        break;
       }
     }
   }
 
-  private void goalSequence(Node step){
-    while (step != null){
-      shortestBoardSequence.push(step.board);
+  private void setGoalSequence(Node step) {
+
+    while (step.prev != null) {
+      goalSequence.addFirst(step.board);
       step = step.prev;
-      shortestNumOfMove++;
     }
   }
 
   public boolean isSolvable(){
-    return solved;
+    return this.solvable;
   }
 
   public int moves(){
-    return totalMoves;
+    return this.moves;
   }
 
   public Iterable<Board> solution(){
-    return shortestBoardSequence;
+    if (this.moves != -1)
+      return goalSequence;
+
+    else
+      return null;
   }
 
-  public static void main(String args[]){
+  private class Node implements Comparable<Node> {
+    private int numMoves;
+    private Board board;
+    private Node prev;
 
-    if (args.length < 1 || args.length > 1){
-      System.out.println("Usage: java Solver puzzles.txt");
-      System.exit(0);
+    public Node(Board Board, int numMoves, Node prev) {
+      this.numMoves = numMoves;
+      this.board = Board;
+      this.prev = prev;
+
     }
+
+    public int compareTo(Node that) {
+      if (this.board.manhattan() + this.numMoves > that.board.manhattan() +
+          that.numMoves)
+        return 1;
+
+      else if (this.board.manhattan() + this.numMoves < that.board.manhattan()
+          + that.numMoves)
+        return -1;
+
+      else return 0;
+    }
+  }
+
+  public static void main(String[] args){
+    long startTime = System.currentTimeMillis();
 
     // create initial board from file
     In in = new In(args[0]);
     int N = in.readInt();
-    int[][] blocks = new int[N][N];
+
+    int blocks[][] = new int[N][N];
 
     for (int i = 0; i < N; i++)
       for (int j = 0; j < N; j++)
         blocks[i][j] = in.readInt();
 
-    Board initial = new Board(blocks);      // solve the puzzle
-    Solver solver = new Solver(initial);    // print solution to standard output
+    Board initial = new Board(blocks);
+    Solver Solver = new Solver(initial);
 
-    if (!solver.isSolvable())
-      System.out.println("No solution possible");
+    // print solution to standard output
+    if (!Solver.isSolvable())
+      StdOut.println("No solution possible");
 
     else {
-      System.out.println("Minimum number of moves = " + solver.moves());
+      StdOut.println("Minimum number of moves = " + Solver.moves());
 
-      for (Board board : solver.solution())
-        System.out.println(board + "\n");
-    }
-  }
-
-  private class Node implements Comparable<Node>{
-
-    Node prev;
-    int numMoves;
-    Board board;
-
-    public Node(Board board, int numMoves, Node prev){
-      this.board = board;
-      this.numMoves = numMoves;
-      this.prev = prev;
+      for (Board board : Solver.solution()){
+        StdOut.println();
+        StdOut.println(board);
+      }
     }
 
-    public Node(){ }
-
-    public int compareTo(Node other){
-      return (this.board.hamming() + this.numMoves) - (other.board.hamming()
-          + other.numMoves);
-    }
+    long endTime   = System.currentTimeMillis();
+    double totalTime = (double)(endTime - startTime)/1000.0;
+    System.out.println("Time elapsed => " + totalTime + "s");
   }
 }
