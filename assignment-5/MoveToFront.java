@@ -1,8 +1,7 @@
 /**
- * Created By: Alex Vallejo
- * Date: 11/14/13
+ * @author Alex Vallejo <amv49@pitt.edu>
+ * @since 11/14/13
  * Project: assignment-5
- * Email: amv49@pitt.edu
  * Peoplesoft: 357-8411
  */
 
@@ -13,8 +12,10 @@ public class MoveToFront {
 // alphabet size
 private static final int R = 256;
 
-  // apply move-to-front encoding,
-  // reading from standard input and writing to standard output
+  /**
+   *  Applies move to front encoding to the standard input. The result is
+   *  written to the standard output.
+   */
   public static void encode(){
 
     //Initialize the list
@@ -35,6 +36,9 @@ private static final int R = 256;
     BinaryStdOut.close();
   }
 
+  /**
+   * Initializes an array list that contains the first R character points.
+   */
   private static ArrayList<Character> initList(){
     ArrayList<Character> list = new ArrayList<Character>(R);
 
@@ -44,8 +48,10 @@ private static final int R = 256;
     return list;
   }
 
-  // apply move-to-front decoding,
-  // reading from standard input and writing to standard output
+  /**
+   * Applies move to front decoding to the standard input. The result is written
+   * to the standard output.
+   */
   public static void decode(){
     ArrayList<Character> list = initList();
 
@@ -66,8 +72,14 @@ private static final int R = 256;
     BinaryStdOut.close();
   }
 
-  // if args[0] is '-', apply move-to-front encoding
-  // if args[0] is '+', apply move-to-front decoding
+  /**
+   * Move to front encoding helps to increase likelyhood that the same
+   * characters will appear next to each other. This class supports both
+   * encoding and decoding. Redirect the output of the class to a file to
+   * store the output.
+   *
+   * @param args enter '-' for encoding or '+' for decoding.
+   */
   public static void main(String[] args){
 
     if (args.length != 1){
@@ -86,7 +98,6 @@ private static final int R = 256;
       System.out.printf("Illegial argument \"%s\". Only \"+\" or \"-\" are " +
           "accepted");
       System.exit(1);
-    }
-
-  }
-}
+    }// end else for illegial argument
+  }// end main
+}// end class
