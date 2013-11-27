@@ -47,7 +47,23 @@ private static final int R = 256;
   // apply move-to-front decoding,
   // reading from standard input and writing to standard output
   public static void decode(){
+    ArrayList<Character> list = initList();
 
+    while(!BinaryStdIn.isEmpty()){
+      // read the next encoded character
+      char indexOfEncodedChar = BinaryStdIn.readChar();
+
+      // find the position of the encoded character
+      char charOut = list.get(indexOfEncodedChar);
+
+      // write the decoded value of the character
+      BinaryStdOut.write(charOut);
+
+      // add the read character to the begining of the list
+      list.remove(indexOfEncodedChar);
+      list.add(0,charOut);
+    }
+    BinaryStdOut.close();
   }
 
   // if args[0] is '-', apply move-to-front encoding
