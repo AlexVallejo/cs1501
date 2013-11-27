@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 public class MoveToFront {
 
-private static final int alphabitSize = 256;
+// alphabet size
+private static final int R = 256;
 
   // apply move-to-front encoding,
   // reading from standard input and writing to standard output
@@ -35,9 +36,9 @@ private static final int alphabitSize = 256;
   }
 
   private static ArrayList<Character> initList(){
-    ArrayList<Character> list = new ArrayList<Character>(256);
+    ArrayList<Character> list = new ArrayList<Character>(R);
 
-    for(Character i = 0; i < 256; i++)
+    for(Character i = 0; i < R; i++)
       list.add(i);
 
     return list;
@@ -54,8 +55,8 @@ private static final int alphabitSize = 256;
   public static void main(String[] args){
 
     if (args.length != 1){
-      System.out.printf("\n\nError: provide encode/decode specifier");
-      System.out.printf("\nex: java MoveToFront - < some_file.txt\n");
+      System.out.printf("\nError: provide encode/decode specifier");
+      System.out.printf("\nex: java MoveToFront - < some_file.txt");
       System.exit(1);
     }
 
