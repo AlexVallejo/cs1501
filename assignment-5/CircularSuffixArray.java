@@ -1,10 +1,17 @@
-/**
- * Created By: Alex Vallejo
+/*******************************************************************************
+ * Name: Alex Vallejo
+ * Email: amv49@pitt.edu, vallejo.alex@gmail.com
  * Date: 11/14/13
- * Project: assignment-5
- * Email: amv49@pitt.edu
+ * Project: assignment-5 (BZIP compress/decompress)
  * Peoplesoft: 357-8411
- */
+ *
+ * Circular suffic array builds the data structure needed for burrows
+ * wheeler transform during instantiation. The information needed by the
+ * burrows wheeler transform can then be extracted from CSA.
+ *
+ * Usage: CircularSuffixArray csa = new CircularSuffixArray("Some string");
+ *
+ ******************************************************************************/
 
 import java.util.Arrays;
 

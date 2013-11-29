@@ -1,9 +1,22 @@
-/**
- * @author Alex Vallejo <amv49@pitt.edu>
- * @since 11/14/13
- * Project: assignment-5
+/*******************************************************************************
+ * Name: Alex Vallejo
+ * Email: amv49@pitt.edu, vallejo.alex@gmail.com
+ * Date: 11/14/13
+ * Project: assignment-5 (BZIP compress/decompress)
  * Peoplesoft: 357-8411
- */
+ *
+ * This class implements the move to front algorithm for pre-compression
+ * optomization. It produces a higher frequency of characters when characters
+ * are close to eachther.
+ *
+ * Move to front plays a fundemental role in the BZIP compression algorithm by
+ * generating a high frequency of characters from the output of the Burrows-
+ * Wheeler transform.
+ *
+ * Usage: java MoveToFront { - | + } < somefile.txt
+ *  - encodes & + decodes
+ *
+ ******************************************************************************/
 
 import java.util.ArrayList;
 
@@ -26,18 +39,23 @@ private static final int R = 256;
 
       // write the position of the read character to the standard out
       char pos = (char)list.indexOf(b);
+
       //System.out.printf("\npos => %d char => %c", (int)pos, b);
       BinaryStdOut.write(pos);
+
       // remove the character from the list
       list.remove(pos);
+
       // add the character to the front of the list
       list.add(0,b);
     }
+
     BinaryStdOut.close();
   }
 
   /**
    * Initializes an array list that contains the first R character points.
+   * @return list the initialized list of the first R unicode code points
    */
   private static ArrayList<Character> initList(){
     ArrayList<Character> list = new ArrayList<Character>(R);
@@ -69,6 +87,7 @@ private static final int R = 256;
       list.remove(indexOfEncodedChar);
       list.add(0,charOut);
     }
+
     BinaryStdOut.close();
   }
 
@@ -95,7 +114,8 @@ private static final int R = 256;
       decode();
 
     else {
-      System.out.printf("Illegial argument \"%s\". Only \"+\" or \"-\" are accepted");
+      System.out.printf("\n\nIllegial argument \"%s\". Only \"+\" or \"-\" are " +
+          "accepted");
       System.exit(1);
     }// end else for illegial argument
   }// end main
