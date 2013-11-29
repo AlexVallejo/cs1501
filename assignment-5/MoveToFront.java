@@ -95,8 +95,7 @@ private static final int R = 256;
       decode();
 
     else {
-      System.out.printf("Illegial argument \"%s\". Only \"+\" or \"-\" are " +
-          "accepted");
+      System.out.printf("Illegial argument \"%s\". Only \"+\" or \"-\" are accepted");
       System.exit(1);
     }// end else for illegial argument
   }// end main
