@@ -92,10 +92,7 @@ private static final int R = 256;
   }
 
   /**
-   * Move to front encoding helps to increase likelyhood that the same
-   * characters will appear next to each other. This class supports both
-   * encoding and decoding. Redirect the output of the class to a file to
-   * store the output.
+   * Apply Move To Front encoding or decoding to standard input
    *
    * @param args enter '-' for encoding or '+' for decoding.
    */
@@ -114,8 +111,8 @@ private static final int R = 256;
       decode();
 
     else {
-      System.out.printf("\n\nIllegial argument \"%s\". Only \"+\" or \"-\" are " +
-          "accepted");
+      System.out.printf("\n\nIllegial argument \"%s\". Only \"+\" or \"-\" are"
+          + " accepted");
       System.exit(1);
     }// end else for illegial argument
   }// end main
