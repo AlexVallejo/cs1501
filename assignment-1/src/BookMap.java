@@ -63,7 +63,7 @@ public class BookMap {
         }
     }
 
-    private void addWordsToTable(String line){
+    public void addWordsToTable(String line){
         int prev = 0;
 
         for (int cur = 0; cur < line.length(); cur++){

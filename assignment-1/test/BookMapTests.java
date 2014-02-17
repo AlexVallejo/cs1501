@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class BookMapTests {
@@ -13,6 +12,7 @@ public class BookMapTests {
     private static String[] fileNames;
 
     @BeforeClass
+    // 
     public static void testSetup() {
 
         bookList = new ArrayList<BookMap>();
@@ -36,6 +36,52 @@ public class BookMapTests {
         }
     }
 
+    @Test
+    public void testEmptyFileWordCount(){
+    	BookMap map = new BookMap("empty_file.txt");
+    	
+    	assertEquals(map.totalWords, 0, 0);
+    }
+    
+    @Test
+    public void testEmotyFileValidity(){
+    	BookMap map = new BookMap("empty_file.txt");
+    	assertFalse(map.valid);
+    }
+    
+    @Test
+    //Ensure two invalid BookMaps with the same name are equal
+    public void testNullFiles(){
+    	BookMap bad = new BookMap("bad_file.txt");
+    	BookMap badder = new BookMap("bad_file.txt");
+    	assertEquals(bad, badder);
+    }
+    
+    @Test
+    // Ensure two book maps created from the same file are equal
+    public void testBookMapEquality(){
+    	BookMap book = new BookMap("mobydick.txt");
+    	BookMap other_book = new BookMap("Mobydick.txt");
+    	assertEquals(book, other_book);
+    }
+    
+    @Test
+    public void testStrangeCharactersAddWordsToTable(){
+    	BookMap map = new BookMap("bad_file.txt");
+    	map.addWordsToTable("Hello \n friends \t \t \t");
+    	
+    	assertEquals(map.totalWords, 2, 0);
+    }
+    
+    @Test
+    public void testValidityAfterAddWordsToTable(){
+    	BookMap map = new BookMap("bad.txt");
+    	map.addWordsToTable("hello world, the big blue dog!");
+    	
+    	assertTrue(map.valid);
+    
+    }
+    
     @Test
     public void testDistanceZero(){
 
@@ -104,11 +150,19 @@ public class BookMapTests {
     }
 
     @Test
-    public void testInvalidity(){
+    public void testNonexistantFile(){
         BookMap badFileName = new BookMap("bad.txt");
 
         assertFalse(badFileName.valid);
     }
+    
+    @Test
+    public void testNullFile(){
+        BookMap badFileName = new BookMap(null);
+
+        assertFalse(badFileName.valid);
+    }
+    
     
     @Test
     public void testInvalidFilenameDistance(){
@@ -118,7 +172,7 @@ public class BookMapTests {
     }
 
     @Test
-    public void testToString(){
+    public void testPrintMap(){
     	BookMap mock = new BookMap("brown_fox.txt");
     	String text = "The quick brown fox jumped over the lazy dog";
     	
@@ -147,6 +201,28 @@ public class BookMapTests {
             System.out.print("\n");
         }
 
+    }
+    
+    @Test
+    public void testNullDistanceBetween(){
+    	BookMap book = new BookMap("mobydick.txt");
+    	assertEquals(book.distanceBetween(null), Double.NaN, 0);
+    }
+    
+    @Test
+    public void testAddWordsToTable(){
+    	BookMap map = new BookMap("bats.txt");
+    	map.addWordsToTable("Hello -_-,. baseball");
+    	
+    	BookMap demo = new BookMap("extra_chars.txt");
+    	
+    	assertEquals(map.totalWords, demo.totalWords);
+    }
+    
+    @Test
+    public void testAddNullWordsToTable(){
+    	BookMap map = new BookMap("bad_file.txt");
+    	map.addWordsToTable(null);
     }
 
     @Test
