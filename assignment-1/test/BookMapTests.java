@@ -1,7 +1,9 @@
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ public class BookMapTests {
     @AfterClass
     public static void testCleanup() {
     }
-
+    
     @Test
     public void testFilename() {
 
@@ -41,6 +43,22 @@ public class BookMapTests {
             assertEquals(0.0, book.distanceBetween(book), 0.000001);
     }
 
+    @Test
+    public void testInvalidFileMessage(){
+    	BookMap mock = new BookMap("bad_file.txt");
+    	String expectedMessage = "bad_file.txt not found!";
+    	
+    	assertEquals(expectedMessage, mock.printMessages());
+    }
+    
+    @Test
+    public void testValidFileMessage(){
+    	BookMap mock = new BookMap("brown_fox.txt");
+    	String message = "filename brown_fox.txt: 1 lines 9 words 8 distinct words";
+    	
+    	assertEquals(message, mock.printMessages());
+    }
+    
     @Test
     public void testEqualityWithExamples(){
         BookMap mobydick = new BookMap("balls.txt");
@@ -86,16 +104,27 @@ public class BookMapTests {
     }
 
     @Test
-    public void testErrorOutput(){
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    public void testInvalidity(){
         BookMap badFileName = new BookMap("bad.txt");
 
         assertFalse(badFileName.valid);
-
-        assertEquals(Double.NaN,bookList.get(0).distanceBetween(badFileName),
-                0);
+    }
+    
+    @Test
+    public void testInvalidFilenameDistance(){
+    	BookMap badFileName = new BookMap("bad.txt");
+    	
+    	assertEquals(Double.NaN,bookList.get(0).distanceBetween(badFileName),0);
     }
 
+    @Test
+    public void testToString(){
+    	BookMap mock = new BookMap("brown_fox.txt");
+    	String text = "The quick brown fox jumped over the lazy dog";
+    	
+    	assertEquals(mock.printMap(), text);    	
+    }
+    
     @Test
     public void testFileCombinations(){
 
@@ -120,24 +149,21 @@ public class BookMapTests {
 
     }
 
-    /*@Test
-    public void speedTest(){
-        int runs = 50;
-        double initialRun;
+    @Test
+    public void testSpeed(){
+        double runTime;
 
         Stopwatch watch = new Stopwatch();
-        BookMap bookTest = new BookMap(fileNames[fileNames.length - 1]);
-        initialRun = watch.elapsedTimeSeconds();
+        new BookMap(fileNames[fileNames.length - 1]);
+        runTime = watch.elapsedTimeSeconds();
 
         watch = new Stopwatch();
 
-        for (int i = 0; i < runs; i++){
-            BookMap book = new BookMap(fileNames[fileNames.length - 1]);
-            book.distanceBetween(book);
-        }
+        BookMap book = new BookMap(fileNames[fileNames.length - 1]);
+        book.distanceBetween(book);
+        
+        assertTrue(runTime < 0.5);
 
-        double averageSpeed = watch.elapsedTimeSeconds() / (double)runs;
-        System.out.println("Initial run time: " + initialRun);
-        System.out.println("Average execution speed: " + averageSpeed);
-    }*/
+        System.out.println("Run time: " + runTime);
+    }
 }

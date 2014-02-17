@@ -120,16 +120,28 @@ public class BookMap {
         return Math.acos(innerProd / (norm * otherNorm));
     }
 
-    public void printMessages(){
-        if (valid)
-            System.out.println("File " + filename  + ": " + lines + " lines, "
-                + totalWords + " words, " + map.size() + " distinct words");
-        else
-            System.out.println(filename + " not found!");
+    public String printMessages(){
+        
+    	String message;
+    	
+    	if (valid)
+    		message = "File " + filename  + ": " + lines + " lines, " + totalWords + " words, " + map.size() + " distinct words";
+        
+    	else
+    		message = filename + " not found!";
+
+    	System.out.println(message);
+    	return message;
     }
 
-    public void printMap(){
+    public String printMap(){
+        StringBuffer sb = new StringBuffer();
+    	
         for (String word : map.keySet())
-            System.out.println(word);
+        	sb.append(word);
+        
+        System.out.println(sb);
+    	
+    	return sb.toString();
     }
 }
